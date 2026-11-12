@@ -66,6 +66,9 @@ jobs:
           echo "debug=$DBG"   >> "$GITHUB_OUTPUT"
           cp "$REL" "HscGuide-v${NAME}-release.apk"
           cp "$DBG" "HscGuide-v${NAME}-debug.apk"
+          # Stable, version-free aliases -> handy for a fixed "latest" download link
+          cp "$REL" "HscGuide-release.apk"
+          cp "$DBG" "HscGuide-debug.apk"
           ls -lh HscGuide-*.apk
           {
             echo "### 📦 APK build info"
@@ -82,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: HscGuide-release-apk
-          path: HscGuide-*-release.apk
+          path: HscGuide-v*-release.apk
           if-no-files-found: error
           retention-days: 90
 
@@ -90,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: HscGuide-debug-apk
-          path: HscGuide-*-debug.apk
+          path: HscGuide-v*-debug.apk
           if-no-files-found: error
           retention-days: 90
 
@@ -111,6 +114,8 @@ jobs:
           files: |
             HscGuide-v${{ steps.ver.outputs.name }}-release.apk
             HscGuide-v${{ steps.ver.outputs.name }}-debug.apk
+            HscGuide-release.apk
+            HscGuide-debug.apk
           body: |
             ## 📚 HSC গাইড — v${{ steps.ver.outputs.name }}
 
