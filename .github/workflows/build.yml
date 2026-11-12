@@ -8,6 +8,11 @@ on:
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: "APK বিল্ড শেষে GitHub Release-এ আপলোড করবে?"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -89,9 +94,13 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-      # Only publish a release from pushes to the main branch (never from PRs)
+      # Publish a release on pushes to the main branch, or on a manual run with
+      # "publish_release" enabled. Never from pull requests.
       - name: Publish GitHub Release
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: >-
+          github.event_name != 'pull_request' &&
+          (github.ref == 'refs/heads/main' ||
+           (github.event_name == 'workflow_dispatch' && inputs.publish_release))
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.ver.outputs.name }}
