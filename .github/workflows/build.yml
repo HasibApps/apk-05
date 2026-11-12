@@ -43,102 +43,60 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Read app version
-        id: ver
-        run: |
-          NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts | head -1)
-          CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts | head -1)
-          echo "name=${NAME:-1.0.0}" >> "$GITHUB_OUTPUT"
-          echo "code=${CODE:-1}" >> "$GITHUB_OUTPUT"
-          echo "App version: ${NAME:-1.0.0} (${CODE:-1})"
-
       - name: Build debug + signed release APK
         run: ./gradlew assembleDebug assembleRelease --no-daemon --stacktrace
 
-      - name: Prepare APK artifacts
+      # Reads the version out of the built APK, fails if the release APK is not
+      # correctly signed, checks that it can update the previous release, and
+      # copies the APKs to dist/ under their release names.
+      - name: Verify APK (signature, version, update from previous release)
         id: apk
-        run: |
-          set -e
-          NAME="${{ steps.ver.outputs.name }}"
-          REL=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
-          DBG=$(find app/build/outputs/apk/debug   -name "*.apk" | head -1)
-          echo "release=$REL" >> "$GITHUB_OUTPUT"
-          echo "debug=$DBG"   >> "$GITHUB_OUTPUT"
-          cp "$REL" "HscGuide-v${NAME}-release.apk"
-          cp "$DBG" "HscGuide-v${NAME}-debug.apk"
-          # Stable, version-free aliases -> handy for a fixed "latest" download link
-          cp "$REL" "HscGuide-release.apk"
-          cp "$DBG" "HscGuide-debug.apk"
-          ls -lh HscGuide-*.apk
-          {
-            echo "### 📦 APK build info"
-            echo ""
-            echo "| Item | Value |"
-            echo "| --- | --- |"
-            echo "| Version | ${NAME} (${{ steps.ver.outputs.code }}) |"
-            echo "| Release APK | \`HscGuide-v${NAME}-release.apk\` ($(du -h "$REL" | cut -f1)) |"
-            echo "| Debug APK | \`HscGuide-v${NAME}-debug.apk\` ($(du -h "$DBG" | cut -f1)) |"
-            echo "| SHA-256 (release) | \`$(sha256sum "$REL" | cut -d' ' -f1)\` |"
-          } > "$GITHUB_STEP_SUMMARY"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/verify-apk.sh
+
+      # dist/release-notes.md = CHANGELOG.md section of this version + APK facts.
+      - name: Write release notes
+        run: bash .github/scripts/release-notes.sh
 
       - name: Upload release APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: HscGuide-release-apk
-          path: HscGuide-v*-release.apk
+          path: dist/HscGuide-v*-release.apk
           if-no-files-found: error
           retention-days: 90
 
       - name: Upload debug APK
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: HscGuide-debug-apk
-          path: HscGuide-v*-debug.apk
+          path: dist/HscGuide-v*-debug.apk
           if-no-files-found: error
           retention-days: 90
 
       # Publish a release on pushes to the main branch, or on a manual run with
       # "publish_release" enabled. Never from pull requests.
+      #
+      # The tag is "v<versionName>" as read from the APK. A new tag is created at
+      # the tip of the default branch, so merge into main before releasing a new
+      # version: a manual run from another branch would tag main, not that branch.
       - name: Publish GitHub Release
         if: >-
           github.event_name != 'pull_request' &&
           (github.ref == 'refs/heads/main' ||
            (github.event_name == 'workflow_dispatch' && inputs.publish_release))
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ steps.ver.outputs.name }}
-          name: HSC Guide v${{ steps.ver.outputs.name }}
+          tag_name: ${{ steps.apk.outputs.tag }}
+          name: HSC Guide ${{ steps.apk.outputs.tag }}
+          body_path: dist/release-notes.md
           draft: false
           prerelease: false
-          generate_release_notes: true
+          fail_on_unmatched_files: true
+          overwrite_files: true
           files: |
-            HscGuide-v${{ steps.ver.outputs.name }}-release.apk
-            HscGuide-v${{ steps.ver.outputs.name }}-debug.apk
-            HscGuide-release.apk
-            HscGuide-debug.apk
-          body: |
-            ## 📚 HSC গাইড — v${{ steps.ver.outputs.name }}
-
-            HSC শিক্ষার্থীদের জন্য অফলাইন PDF লাইব্রেরি অ্যাপ।
-
-            ### ⬇️ ডাউনলোড
-            | APK | ফাইল | ব্যবহার |
-            | --- | --- | --- |
-            | **Release (সাইন করা)** | `HscGuide-v${{ steps.ver.outputs.name }}-release.apk` | সাধারণ ব্যবহারের জন্য — এটাই ইনস্টল করুন |
-            | **Debug** | `HscGuide-v${{ steps.ver.outputs.name }}-debug.apk` | টেস্টিং / ডেভেলপারের জন্য |
-
-            ### 📲 ইনস্টল করার নিয়ম
-            1. উপরের `release.apk` ফাইলটি ডাউনলোড করুন।
-            2. ফাইলটিতে ট্যাপ করুন — "Unknown sources / অজানা উৎস" অনুমতি চাইলে **Allow** দিন।
-            3. **Install** চাপুন, তারপর **Open**।
-
-            ### ✨ ফিচার
-            - ৭টি বিষয়: বাংলা, ইংরেজি, আইসিটি, পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, উচ্চতর গণিত
-            - ১ম ও ২য় পত্র আলাদা, মূল বই + টেস্ট পেপার সেকশন
-            - Google Drive লিংক থেকে PDF ডাউনলোড, অফলাইনে সংরক্ষণ
-            - বিল্ট-ইন PDF রিডার: পিঞ্চ-জুম, পেজ নাম্বারে যাওয়া
-            - অ্যাডমিন মোড: ফোল্ডার/PDF যোগ, এডিট, ডিলিট, JSON ব্যাকআপ ও ইমপোর্ট
-            - বাংলা ইন্টারফেস, ডার্ক থিম
-
-            ---
-            **Package:** `com.hasib.guide` · **Min Android:** 8.0 (API 26) · **Build:** GitHub Actions
+            dist/HscGuide-${{ steps.apk.outputs.tag }}-release.apk
+            dist/HscGuide-${{ steps.apk.outputs.tag }}-debug.apk
+            dist/HscGuide-release.apk
+            dist/HscGuide-debug.apk
