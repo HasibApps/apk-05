@@ -12,7 +12,8 @@ object Store {
 
     fun init(dir: File) {
         file = File(dir, "data.json")
-        root = if (file.exists()) JSONObject(file.readText()) else default().also { save() }
+        root = try { JSONObject(file.readText()) } catch (e: Exception) { default() }
+        if (!file.exists()) save()
     }
     private fun item(t: String, folder: Boolean) = JSONObject().put("t", t).put("f", folder).put("l", "").put("c", JSONArray())
     private fun default(): JSONObject {

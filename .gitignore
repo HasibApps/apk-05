@@ -11,3 +11,6 @@ captures/
 # Outputs
 *.apk.idsig
 *.hprof
+
+# CI output (.github/scripts/verify-apk.sh, release-notes.sh)
+/dist/

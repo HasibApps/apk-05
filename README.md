@@ -27,7 +27,7 @@
 | 🟡 **Debug** | [HscGuide-debug.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-debug.apk) | ~3.3 MB | টেস্টিং / ডেভেলপারদের জন্য |
 | 📄 **সব ভার্সন** | [Releases পেজ](https://github.com/HasibApps/apk-05/releases) | — | পুরোনো ও নতুন সব ভার্সন |
 
-> নির্দিষ্ট ভার্সনের লিংক: `https://github.com/HasibApps/apk-05/releases/download/v1.0.0/HscGuide-v1.0.0-release.apk`
+> নির্দিষ্ট ভার্সনের লিংক: `https://github.com/HasibApps/apk-05/releases/download/v2.0.0/HscGuide-v2.0.0-release.apk`
 
 ## 🔗 গুরুত্বপূর্ণ লিংক
 
@@ -35,7 +35,8 @@
 | :-- | :-- |
 | 📦 GitHub Repository | https://github.com/HasibApps/apk-05 |
 | 🚀 Latest Release | https://github.com/HasibApps/apk-05/releases/latest |
-| 🏷️ Release v1.0.0 | https://github.com/HasibApps/apk-05/releases/tag/v1.0.0 |
+| 🏷️ Release v2.0.0 | https://github.com/HasibApps/apk-05/releases/tag/v2.0.0 |
+| 📝 Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | ⚙️ GitHub Actions Workflow | https://github.com/HasibApps/apk-05/actions/workflows/build.yml |
 | 📥 Build Artifacts (Actions) | https://github.com/HasibApps/apk-05/actions |
 
@@ -47,7 +48,16 @@
 3. **Install** চাপুন, তারপর **Open**।
 4. প্রথমবার খুললে অ্যাপ নিজে থেকেই ডিফল্ট ডাটা তৈরি করে নেবে।
 
-> ⚠️ পুরোনো কোনো বিল্ড ইনস্টল করা থাকলে আনইনস্টল করে নিন (সিগনেচার আলাদা)।
+> 🔄 **v1.0.0 থেকে আপডেট:** v1.0.0-এর Release APK ইনস্টল করা থাকলে আনইনস্টল করতে হবে না — তার উপরেই v2.0.0 ইনস্টল করুন (একই সাইনিং কী)।
+>
+> ⚠️ Debug APK ইনস্টল করা থাকলে আগে সেটি আনইনস্টল করে নিন — Debug ও Release-এর সিগনেচার আলাদা।
+
+## 🆕 v2.0.0-এ নতুন
+
+- 🐛 **প্রথমবার খুললেই অ্যাপ বন্ধ হয়ে যাওয়ার সমস্যা ঠিক করা হয়েছে** (v1.0.0-এ ছিল)।
+- 🛡️ ডাটা ফাইল (`data.json`) নষ্ট বা অপাঠযোগ্য হলেও অ্যাপ ডিফল্ট ডাটা দিয়ে চালু হয়।
+
+সব ভার্সনের পরিবর্তন: [CHANGELOG.md](CHANGELOG.md)
 
 ---
 
@@ -92,7 +102,7 @@
 | :-- | :-- |
 | **App Name** | HSC গাইড (HSC Guide) |
 | **Package** | `com.hasib.guide` |
-| **Version** | 1.0.0 (versionCode 1) |
+| **Version** | 2.0.0 (versionCode 2) |
 | **Min SDK** | 26 — Android 8.0 Oreo |
 | **Target / Compile SDK** | 34 — Android 14 |
 | **Release APK Size** | ~2.6 MB |
@@ -104,7 +114,11 @@
 
 ```
 apk-05/
-├── .github/workflows/build.yml     # CI: build + sign + release
+├── .github/
+│   ├── workflows/build.yml         # CI: build + sign + verify + release
+│   └── scripts/
+│       ├── verify-apk.sh           # APK-র সিগনেচার, ভার্সন ও আপডেট যাচাই
+│       └── release-notes.sh        # CHANGELOG.md থেকে রিলিজ নোট তৈরি
 ├── app/
 │   ├── build.gradle.kts            # app module, versioning, signing
 │   └── src/main/
@@ -114,6 +128,7 @@ apk-05/
 │       │   ├── PdfActivity.kt      # বিল্ট-ইন PDF রিডার
 │       │   └── Store.kt            # JSON ডাটা স্টোর + ডিফল্ট কনটেন্ট
 │       └── res/                    # layout, drawable, theme
+├── CHANGELOG.md                    # কোন ভার্সনে কী বদলেছে
 ├── docs/banner.png
 ├── gradle/wrapper/                 # Gradle wrapper (8.7)
 ├── signing/hscguide-release.p12    # ডেমো রিলিজ কীস্টোর
@@ -126,8 +141,17 @@ apk-05/
 
 1. JDK 17 + Gradle 8.7 সেটআপ
 2. `assembleDebug` + `assembleRelease` (সাইন করা) বিল্ড
-3. APK গুলো **Artifacts** হিসেবে আপলোড (৯০ দিন সংরক্ষিত)
-4. `versionName` থেকে ট্যাগ নিয়ে **GitHub Release** তৈরি ও APK আপলোড
+3. **APK যাচাই** — `apksigner` দিয়ে সিগনেচার, APK-র ভেতরের ভার্সন, এবং আগের রিলিজের উপর সরাসরি আপডেট হবে কি না
+   (সিগনেচার ঠিক না থাকলে বিল্ড ফেইল করে, রিলিজ হয় না)
+4. APK গুলো **Artifacts** হিসেবে আপলোড (৯০ দিন সংরক্ষিত)
+5. APK-র `versionName` থেকে ট্যাগ (যেমন `v2.0.0`) নিয়ে **GitHub Release** তৈরি ও APK আপলোড —
+   রিলিজ নোটের "নতুন কী" অংশ আসে [`CHANGELOG.md`](CHANGELOG.md) থেকে
+
+### 🚀 নতুন ভার্সন ছাড়ার নিয়ম
+
+1. [`app/build.gradle.kts`](app/build.gradle.kts)-এ `versionCode` এক বাড়ান এবং `versionName` বদলান (যেমন `3` ও `"3.0.0"`)।
+2. [`CHANGELOG.md`](CHANGELOG.md)-তে `## v3.0.0` নামে একটি অংশ যোগ করে কী বদলেছে লিখুন।
+3. `main` ব্রাঞ্চে push / merge করুন — বিল্ড, যাচাই ও Release অটোমেটিক হয়ে যাবে।
 
 **ম্যানুয়ালি চালাতে:** Actions → *Build & Release APK* → **Run workflow**
 
