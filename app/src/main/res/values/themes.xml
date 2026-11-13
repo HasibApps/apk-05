@@ -1,8 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_bg">#06121F</color>
-    <style name="Theme.Guide" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">#0B1220</item>
-        <item name="android:statusBarColor">#0B1220</item>
-        <item name="android:navigationBarColor">#0B1220</item>
+    <style name="Theme.HSCGuide" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/cyber_emerald</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/cyber_emerald_soft</item>
+        <item name="colorOnPrimaryContainer">@color/cyber_dark_bg</item>
+        <item name="colorSecondary">@color/cyber_cyan</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/surface_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/surface_frost</item>
+        <item name="android:fontFamily">@font/hind_siliguri</item>
+        <item name="fontFamily">@font/hind_siliguri</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 </resources>

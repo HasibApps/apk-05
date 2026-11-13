@@ -21,11 +21,14 @@ concurrency:
   group: build-apk-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
 jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -42,6 +45,19 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
+
+      # AGP 9.1.1 compiles against API 36.1; make sure the SDK packages are
+      # present even on runner images that ship them several revisions behind.
+      - name: Install Android SDK packages
+        run: |
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKMANAGER" ] || SDKMANAGER=$(command -v sdkmanager || true)
+          if [ -n "$SDKMANAGER" ] && [ -x "$SDKMANAGER" ]; then
+            yes | "$SDKMANAGER" --install "platforms;android-36.1" "build-tools;36.0.0" \
+              || echo "::warning title=SDK install::sdkmanager could not install the extra packages, Gradle will fetch them itself."
+          else
+            echo "::warning title=SDK install::sdkmanager not found, relying on Gradle's automatic SDK download."
+          fi
 
       - name: Build debug + signed release APK
         run: ./gradlew assembleDebug assembleRelease --no-daemon --stacktrace
@@ -78,9 +94,10 @@ jobs:
       # Publish a release on pushes to the main branch, or on a manual run with
       # "publish_release" enabled. Never from pull requests.
       #
-      # The tag is "v<versionName>" as read from the APK. A new tag is created at
-      # the tip of the default branch, so merge into main before releasing a new
-      # version: a manual run from another branch would tag main, not that branch.
+      # The tag is "v<versionName>" as read from the APK, and it is created at
+      # the exact commit that was built (target_commitish), so the release can
+      # be verified from a branch before that branch is merged into main.
+      # Re-running the same version later overwrites the APK assets of the tag.
       - name: Publish GitHub Release
         if: >-
           github.event_name != 'pull_request' &&
@@ -89,6 +106,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.apk.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           name: HSC Guide ${{ steps.apk.outputs.tag }}
           body_path: dist/release-notes.md
           draft: false
