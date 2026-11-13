@@ -9,7 +9,7 @@
 [![Build & Release APK](https://github.com/HasibApps/apk-05/actions/workflows/build.yml/badge.svg)](https://github.com/HasibApps/apk-05/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/HasibApps/apk-05?label=release&color=00C875)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/HasibApps/apk-05/total?color=00B8D9)](https://github.com/HasibApps/apk-05/releases)
-[![APK Size](https://img.shields.io/badge/APK-{{SIZE_MB}}%20MB-00C875)](https://github.com/HasibApps/apk-05/releases/latest)
+[![APK Size](https://img.shields.io/badge/APK-6.8%20MB-00C875)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Android](https://img.shields.io/badge/Android-7.0%2B%20(API%2024)-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
@@ -25,8 +25,8 @@
 
 | ধরন | ফাইল | সাইজ | বিবরণ |
 | :-- | :-- | :-- | :-- |
-| 🟢 **Release (সাইন করা)** | **[HscGuide-v3.0.0-release.apk](https://github.com/HasibApps/apk-05/releases/download/v3.0.0/HscGuide-v3.0.0-release.apk)** | {{REL_SIZE}} | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
-| 🟡 **Debug** | [HscGuide-v3.0.0-debug.apk](https://github.com/HasibApps/apk-05/releases/download/v3.0.0/HscGuide-v3.0.0-debug.apk) | {{DBG_SIZE}} | টেস্টিং / ডেভেলপারদের জন্য |
+| 🟢 **Release (সাইন করা)** | **[HscGuide-v3.0.0-release.apk](https://github.com/HasibApps/apk-05/releases/download/v3.0.0/HscGuide-v3.0.0-release.apk)** | 6.84 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
+| 🟡 **Debug** | [HscGuide-v3.0.0-debug.apk](https://github.com/HasibApps/apk-05/releases/download/v3.0.0/HscGuide-v3.0.0-debug.apk) | 8.41 MB | টেস্টিং / ডেভেলপারদের জন্য |
 | 🔁 **সবসময় সর্বশেষ** | [HscGuide-release.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-release.apk) | — | সর্বশেষ রিলিজের সাইন করা APK |
 | 📄 **সব ভার্সন** | [Releases পেজ](https://github.com/HasibApps/apk-05/releases) | — | পুরোনো ও নতুন সব ভার্সন |
 
@@ -39,15 +39,15 @@
 | **অ্যাপের নাম** | HSC গাইড (HSC Guide) |
 | **Version** | `3.0.0` · versionCode **4** |
 | **Package / Application ID** | `com.hasib.guide` |
-| **Release ফাইল** | `HscGuide-v3.0.0-release.apk` · {{REL_SIZE}} |
-| **SHA-256** | `{{SHA256}}` |
-| **সাইনিং** | ✅ apksigner-এ যাচাই করা — v1 + v2 + v3 স্কিম ({{SCHEMES}}) |
-| **সাইনিং সার্টিফিকেট** | `CN=HSC Guide, O=HasibApps, C=BD`<br>SHA-256: `{{CERT}}` |
-| **কীস্টোর** | `signing/hscguide-release.p12` (PKCS#12, alias `hscguide`) |
+| **Release ফাইল** | `HscGuide-v3.0.0-release.apk` · 6.84 MB |
+| **SHA-256** | `7c77ee321f06d587c1c00e9254326a4bc48f184dfa63e96e1a80cbd3b90fb17c` |
+| **সাইনিং** | ✅ apksigner-এ যাচাই করা — v2 + v3 স্কিম |
+| **সাইনিং সার্টিফিকেট** | `CN=HSC Guide, O=HasibApps, C=BD`<br>SHA-256: `4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2` |
+| **কীস্টোর** | `signing/hscguide-release.p12` (PKCS#12, alias `hscguide`) — CI-তে একই কী দিয়ে সাইন হয় |
 | **Min SDK** | 24 — Android 7.0 Nougat |
 | **Target / Compile SDK** | 36 / 36.1 — Android 16 |
 | **অনুমতি** | `INTERNET`, `ACCESS_NETWORK_STATE` |
-| **বিল্ড** | GitHub Actions · commit [`{{SHA_SHORT}}`](https://github.com/HasibApps/apk-05/commit/{{SHA_FULL}}) |
+| **বিল্ড** | GitHub Actions · commit [`53691d5`](https://github.com/HasibApps/apk-05/commit/53691d598d4aa15f96074e772f421f5387e49458) |
 
 <details>
 <summary><b>✅ ইনস্টল করে যাচাই করবেন কীভাবে</b></summary>
@@ -55,7 +55,7 @@
 ```bash
 # ডাউনলোড করা ফাইলের SHA-256 মিলিয়ে দেখুন
 sha256sum HscGuide-v3.0.0-release.apk
-# {{SHA256}}
+# 7c77ee321f06d587c1c00e9254326a4bc48f184dfa63e96e1a80cbd3b90fb17c
 
 # সিগনেচার ও সার্টিফিকেট যাচাই (Android SDK build-tools দরকার)
 apksigner verify --verbose --print-certs HscGuide-v3.0.0-release.apk
