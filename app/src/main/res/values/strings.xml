@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">HSC গাইড</string>
+    <string name="header_title">একাদশ-দ্বাদশ শ্রেণির গাইড</string>
+    <string name="header_subtitle">শিক্ষাবর্ষ: ২০২৫-২০২৬ • পরীক্ষা: ২০২৭</string>
+
+    <string name="nav_subjects">বিষয়সমূহ</string>
+    <string name="nav_offline">অফলাইন PDF</string>
+
+    <string name="tab_first_paper">1st Paper</string>
+    <string name="tab_second_paper">2nd Paper</string>
+
+    <string name="section_main_book">মূল বই</string>
+    <string name="section_test_paper">Test Paper</string>
+
+    <string name="cd_settings">সেটিংস</string>
+    <string name="cd_back">ফিরে যান</string>
+    <string name="cd_app_logo">HSC গাইড লোগো</string>
+    <string name="cd_download_pdf">অফলাইনে ডাউনলোড করুন</string>
+    <string name="cd_open_offline">অফলাইনে পড়ুন</string>
+    <string name="cd_search_page">পৃষ্ঠা খুঁজুন</string>
+    <string name="cd_delete_pdf">ডাউনলোড মুছুন</string>
+
+    <string name="settings_title">সেটিংস ও কন্ট্রোল</string>
+    <string name="settings_admin_title">অ্যাডমিন প্যানেল</string>
+    <string name="settings_admin_desc">সব ৭টি বিষয়ের বই, টেস্ট পেপার ও লিংক পরিবর্তন করুন</string>
+    <string name="settings_export_json_title">ডাটা (.json) ডাউনলোড</string>
+    <string name="settings_export_json_desc">সব ৭টি বিষয়ের নাম ও লিংক JSON ফাইলে সেভ করুন</string>
+    <string name="settings_import_json_title">ডাটা (.json) ইমপোর্ট</string>
+    <string name="settings_import_json_desc">আগে সেভ করা JSON ফাইল থেকে ডাটা লোড করুন</string>
+
+    <string name="admin_password_title">অ্যাডমিন যাচাইকরণ</string>
+    <string name="admin_password_hint">পাসওয়ার্ড লিখুন</string>
+    <string name="admin_password_error">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</string>
+    <string name="admin_unlock">প্রবেশ করুন</string>
+    <string name="cancel">বাতিল</string>
+    <string name="save">সেভ করুন</string>
+    <string name="delete">মুছুন</string>
+
+    <string name="admin_panel_title">অ্যাডমিন প্যানেল</string>
+    <string name="admin_add_folder">+ নতুন ফোল্ডার</string>
+    <string name="admin_add_pdf">+ নতুন PDF</string>
+    <string name="admin_reset_default">ডিফল্ট রিসেট</string>
+    <string name="admin_saved_toast">সকল পরিবর্তন সংরক্ষণ করা হয়েছে!</string>
+
+    <string name="offline_empty_title">কোনো অফলাইন PDF ডাউনলোড করা নেই</string>
+    <string name="offline_empty_desc">যেকোনো বিষয়ের PDF এর ডাউনলোড আইকনে ট্যাপ করলে তা অটো থাম্বনেইলসহ এখানে সেভ হবে এবং ইন্টারনেট ছাড়াই পড়া যাবে।</string>
+    <string name="offline_search_hint">ডাউনলোড করা PDF খুঁজুন…</string>
+
+    <string name="pdf_search_page_hint">পৃষ্ঠা নম্বর (যেমন: 5)</string>
+    <string name="pdf_go">যান</string>
+    <string name="pdf_zoom_hint">২ আঙুলে জুম • ডাবল ট্যাপ</string>
+
+    <string name="footer_copyright">Copyright © 2026 HSC 26 এর সকল গাইড ও বই।</string>
+    <string name="footer_credit">The App Create By Hasib Bro • Contact: 01831410991 / @Yyuu43222</string>
+</resources>

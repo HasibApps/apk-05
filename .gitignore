@@ -1,16 +1,22 @@
-# Gradle
-build/
-.gradle/
-local.properties
 *.iml
-.idea/
-captures/
-.externalNativeBuild/
-.cxx/
+.gradle
+.kotlin
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+.env
+debug.keystore
 
-# Outputs
-*.apk.idsig
-*.hprof
-
-# CI output (.github/scripts/verify-apk.sh, release-notes.sh)
-/dist/
+# Local signing override + CI output
+signing.properties
+dist/
