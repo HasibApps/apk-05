@@ -40,7 +40,7 @@
 | **Version** | `3.0.0` · versionCode **4** |
 | **Package / Application ID** | `com.hasib.guide` |
 | **Release ফাইল** | `HscGuide-v3.0.0-release.apk` · 6.84 MB |
-| **SHA-256** | `7c77ee321f06d587c1c00e9254326a4bc48f184dfa63e96e1a80cbd3b90fb17c` |
+| **SHA-256** | `6bbba0a80251c219c7ec5d907abdab9cba9c5c7080b5a6f86142f4892a48ccc1` |
 | **সাইনিং** | ✅ apksigner-এ যাচাই করা — v2 + v3 স্কিম |
 | **সাইনিং সার্টিফিকেট** | `CN=HSC Guide, O=HasibApps, C=BD`<br>SHA-256: `4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2` |
 | **কীস্টোর** | `signing/hscguide-release.p12` (PKCS#12, alias `hscguide`) — CI-তে একই কী দিয়ে সাইন হয় |
@@ -55,7 +55,7 @@
 ```bash
 # ডাউনলোড করা ফাইলের SHA-256 মিলিয়ে দেখুন
 sha256sum HscGuide-v3.0.0-release.apk
-# 7c77ee321f06d587c1c00e9254326a4bc48f184dfa63e96e1a80cbd3b90fb17c
+# 6bbba0a80251c219c7ec5d907abdab9cba9c5c7080b5a6f86142f4892a48ccc1
 
 # সিগনেচার ও সার্টিফিকেট যাচাই (Android SDK build-tools দরকার)
 apksigner verify --verbose --print-certs HscGuide-v3.0.0-release.apk
