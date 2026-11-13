@@ -9,7 +9,7 @@
 [![Build & Release APK](https://github.com/HasibApps/apk-05/actions/workflows/build.yml/badge.svg)](https://github.com/HasibApps/apk-05/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/HasibApps/apk-05?label=release&color=00E0A4)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/HasibApps/apk-05/total?color=0ABDE3)](https://github.com/HasibApps/apk-05/releases)
-[![APK Size](https://img.shields.io/badge/APK-2.6%20MB-5F27CD)](https://github.com/HasibApps/apk-05/releases/latest)
+[![APK Size](https://img.shields.io/badge/APK-2.5%20MB-5F27CD)](https://github.com/HasibApps/apk-05/releases/latest)
 [![minSdk](https://img.shields.io/badge/Android-8.0%2B%20(API%2026)-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.24-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
@@ -23,11 +23,44 @@
 
 | ধরন | ডাউনলোড লিংক | সাইজ | বিবরণ |
 | :-- | :-- | :-- | :-- |
-| 🟢 **Release (সাইন করা)** | **[HscGuide-release.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-release.apk)** | ~2.6 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
-| 🟡 **Debug** | [HscGuide-debug.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-debug.apk) | ~3.3 MB | টেস্টিং / ডেভেলপারদের জন্য |
+| 🟢 **Release (সাইন করা)** | **[HscGuide-release.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-release.apk)** | 2.51 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
+| 🟡 **Debug** | [HscGuide-debug.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-debug.apk) | 3.16 MB | টেস্টিং / ডেভেলপারদের জন্য |
 | 📄 **সব ভার্সন** | [Releases পেজ](https://github.com/HasibApps/apk-05/releases) | — | পুরোনো ও নতুন সব ভার্সন |
 
-> নির্দিষ্ট ভার্সনের লিংক: `https://github.com/HasibApps/apk-05/releases/download/v2.0.0/HscGuide-v2.0.0-release.apk`
+> নির্দিষ্ট ভার্সনের লিংক: `https://github.com/HasibApps/apk-05/releases/download/v2.1.0/HscGuide-v2.1.0-release.apk`
+
+## 📦 APK ডিটেইলস — v2.1.0
+
+**HSC Guide v2.1.0** রিলিজের APK ফাইলগুলোর সম্পূর্ণ টেকনিক্যাল ডিটেইলস:
+
+| | 🟢 **Release APK** | 🟡 **Debug APK** |
+| :-- | :-- | :-- |
+| **ফাইল** | [`HscGuide-v2.1.0-release.apk`](https://github.com/HasibApps/apk-05/releases/download/v2.1.0/HscGuide-v2.1.0-release.apk) | [`HscGuide-v2.1.0-debug.apk`](https://github.com/HasibApps/apk-05/releases/download/v2.1.0/HscGuide-v2.1.0-debug.apk) |
+| **সাইজ** | **2.51 MB** (2,633,765 bytes) | **3.16 MB** (3,313,868 bytes) |
+| **ব্যবহার** | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** | টেস্টিং / ডেভেলপারদের জন্য |
+| **সাইনিং** | ✅ রিলিজ কী, v1 + v2 scheme | ডিবাগ কী |
+| **SHA-256** | `56717bd41628bf9cca8a8c6bb42968a6d686c44d213c9fbc879f964496568391` | — |
+
+| | |
+| :-- | :-- |
+| **App Name** | HSC গাইড (HSC Guide) |
+| **Version** | **2.1.0** (versionCode 3) |
+| **Package** | `com.hasib.guide` |
+| **Min SDK** | 26 — Android 8.0 Oreo |
+| **Target / Compile SDK** | 34 — Android 14 |
+| **Permissions** | `INTERNET` (PDF ডাউনলোডের জন্য) |
+| **সাইনিং সার্টিফিকেট SHA-256** | `4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2` |
+| **Build** | GitHub Actions · commit [`b87d9f2`](https://github.com/HasibApps/apk-05/commit/b87d9f2960954b35acab18d837aedbc4c639a5c8) |
+| **Build date** | ১৩ নভেম্বর ২০২৬ |
+| **আপডেট** | ✅ v2.0.0-এর উপর সরাসরি ইনস্টল হবে (একই সাইনিং কী, versionCode 2 → 3) |
+| **Developer** | Hasib Bro · 01831410991 |
+
+**🔐 চেকসাম যাচাই** (ডাউনলোডের পর ফাইল অক্ষত কি না দেখতে):
+
+```bash
+sha256sum HscGuide-v2.1.0-release.apk
+# আউটপুটের হ্যাশ উপরের SHA-256-এর সাথে মিললে ফাইল অরিজিনাল ও অক্ষত
+```
 
 ## 🔗 গুরুত্বপূর্ণ লিংক
 
@@ -35,7 +68,7 @@
 | :-- | :-- |
 | 📦 GitHub Repository | https://github.com/HasibApps/apk-05 |
 | 🚀 Latest Release | https://github.com/HasibApps/apk-05/releases/latest |
-| 🏷️ Release v2.0.0 | https://github.com/HasibApps/apk-05/releases/tag/v2.0.0 |
+| 🏷️ Release v2.1.0 | https://github.com/HasibApps/apk-05/releases/tag/v2.1.0 |
 | 📝 Changelog | [CHANGELOG.md](CHANGELOG.md) |
 | ⚙️ GitHub Actions Workflow | https://github.com/HasibApps/apk-05/actions/workflows/build.yml |
 | 📥 Build Artifacts (Actions) | https://github.com/HasibApps/apk-05/actions |
@@ -48,14 +81,19 @@
 3. **Install** চাপুন, তারপর **Open**।
 4. প্রথমবার খুললে অ্যাপ নিজে থেকেই ডিফল্ট ডাটা তৈরি করে নেবে।
 
-> 🔄 **v1.0.0 থেকে আপডেট:** v1.0.0-এর Release APK ইনস্টল করা থাকলে আনইনস্টল করতে হবে না — তার উপরেই v2.0.0 ইনস্টল করুন (একই সাইনিং কী)।
+> 🔄 **v2.0.0 থেকে আপডেট:** v2.0.0-এর Release APK ইনস্টল করা থাকলে আনইনস্টল করতে হবে না — তার উপরেই v2.1.0 ইনস্টল করুন (একই সাইনিং কী)।
 >
 > ⚠️ Debug APK ইনস্টল করা থাকলে আগে সেটি আনইনস্টল করে নিন — Debug ও Release-এর সিগনেচার আলাদা।
 
-## 🆕 v2.0.0-এ নতুন
+## 🆕 v2.1.0-এ নতুন
 
-- 🐛 **প্রথমবার খুললেই অ্যাপ বন্ধ হয়ে যাওয়ার সমস্যা ঠিক করা হয়েছে** (v1.0.0-এ ছিল)।
-- 🛡️ ডাটা ফাইল (`data.json`) নষ্ট বা অপাঠযোগ্য হলেও অ্যাপ ডিফল্ট ডাটা দিয়ে চালু হয়।
+- 🔍 **PDF সার্চ** — সার্চ বক্সে লিখলেই মূল বই ও টেস্ট পেপারের PDF ফিল্টার হয়ে সাথে সাথে দেখায়।
+- ✨ **নতুন UI অ্যানিমেশন** — আইটেমগুলো একে একে স্লাইড করে আসে, বাটনে টাচ প্রেস-ইফেক্ট।
+- 🏠 **স্বাগতম ব্যানার** — হোম স্ক্রিনে মোট কতগুলো PDF অফলাইনে সংরক্ষিত তা দেখায়।
+- 📊 **অফলাইন কাউন্টার** — প্রতিটি বিষয় কার্ডে ও ফোল্ডারে "কটি / মোট অফলাইন" হিসেব দেখায়।
+- 📥 **স্ট্যাটাস ও ফাইল সাইজ** — প্রতিটি আইটেমে "অফলাইন • X.X MB" বা "অনলাইন • ডাউনলোড করুন" স্ট্যাটাস।
+- ⬇️ **ডাউনলোড উন্নতি** — লাইভ শতকরা প্রগ্রেস (0%–100%), Google Drive-এর বিকল্প সার্ভার অটো-ট্রাই, পরিষ্কার এরর মেসেজ, একই ফাইলের ডুপ্লিকেট ডাউনলোড বন্ধ।
+- 🗑️ **অফলাইন কপি মুছে ফেলা** — ডাউনলোড করা PDF-তে লং-প্রেস করে ফোন থেকে মুছে স্টোরেজ ফাঁকা করা যায়।
 
 সব ভার্সনের পরিবর্তন: [CHANGELOG.md](CHANGELOG.md)
 
@@ -68,8 +106,10 @@
 | 📚 **৭টি বিষয়** | বাংলা, ইংরেজি, আইসিটি, পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, উচ্চতর গণিত |
 | 📗 **১ম ও ২য় পত্র** | প্রতিটি বিষয়ে আলাদা পত্র অনুযায়ী সাজানো কনটেন্ট |
 | 🗂️ **মূল বই + টেস্ট পেপার** | দুইটি আলাদা সেকশন, ফোল্ডার সাপোর্ট (নেস্টেড) |
-| ☁️ **Google Drive সাপোর্ট** | Drive শেয়ার লিংক অটো-কনভার্ট করে সরাসরি ডাউনলোড |
-| 📴 **সম্পূর্ণ অফলাইন** | একবার ডাউনলোড হলে ইন্টারনেট ছাড়াই পড়া যায় |
+| ☁️ **Google Drive সাপোর্ট** | Drive শেয়ার লিংক অটো-কনভার্ট, বিকল্প সার্ভার ফলব্যাক — ডাউনলোড ব্যর্থ হওয়ার সম্ভাবনা অনেক কম |
+| ⬇️ **লাইভ ডাউনলোড প্রগ্রেস** | ডাউনলোডের সময় শতকরা প্রগ্রেস (0%–100%) সরাসরি আইটেমে দেখায় |
+| 🔎 **PDF সার্চ** | বিষয়ের ভেতরে নাম লিখেই মূল বই ও টেস্ট পেপারের PDF খুঁজে বের করুন |
+| 📴 **সম্পূর্ণ অফলাইন** | একবার ডাউনলোড হলে ইন্টারনেট ছাড়াই পড়া যায়; লং-প্রেস করে অফলাইন কপিও মুছে ফেলা যায় |
 | 🖼️ **অটো থাম্বনেইল** | PDF-এর প্রথম পৃষ্ঠা থেকে থাম্বনেইল তৈরি হয় |
 | 🔍 **বিল্ট-ইন PDF রিডার** | পিঞ্চ-জুম (1x–4x), নির্দিষ্ট পেজে যাওয়া, স্ক্রল ভিউ |
 | 🔐 **অ্যাডমিন মোড** | পাসওয়ার্ড দিয়ে আনলক — ফোল্ডার/PDF যোগ, এডিট, ডিলিট |
@@ -95,20 +135,6 @@
 | **PDF** | Android `PdfRenderer` (built-in, কোনো ভারী লাইব্রেরি নেই) |
 | **Storage** | Internal app storage + `org.json` |
 | **CI/CD** | GitHub Actions → signed APK → automatic GitHub Release |
-
-## 📋 অ্যাপ ইনফো
-
-| Field | Value |
-| :-- | :-- |
-| **App Name** | HSC গাইড (HSC Guide) |
-| **Package** | `com.hasib.guide` |
-| **Version** | 2.0.0 (versionCode 2) |
-| **Min SDK** | 26 — Android 8.0 Oreo |
-| **Target / Compile SDK** | 34 — Android 14 |
-| **Release APK Size** | ~2.6 MB |
-| **Signing** | Signed release build (v1 + v2 scheme) |
-| **Permissions** | `INTERNET` (PDF ডাউনলোডের জন্য) |
-| **Developer** | Hasib Bro · 01831410991 |
 
 ## 🗂️ প্রজেক্ট স্ট্রাকচার
 
@@ -144,7 +170,7 @@ apk-05/
 3. **APK যাচাই** — `apksigner` দিয়ে সিগনেচার, APK-র ভেতরের ভার্সন, এবং আগের রিলিজের উপর সরাসরি আপডেট হবে কি না
    (সিগনেচার ঠিক না থাকলে বিল্ড ফেইল করে, রিলিজ হয় না)
 4. APK গুলো **Artifacts** হিসেবে আপলোড (৯০ দিন সংরক্ষিত)
-5. APK-র `versionName` থেকে ট্যাগ (যেমন `v2.0.0`) নিয়ে **GitHub Release** তৈরি ও APK আপলোড —
+5. APK-র `versionName` থেকে ট্যাগ (যেমন `v2.1.0`) নিয়ে **GitHub Release** তৈরি ও APK আপলোড —
    রিলিজ নোটের "নতুন কী" অংশ আসে [`CHANGELOG.md`](CHANGELOG.md) থেকে
 
 ### 🚀 নতুন ভার্সন ছাড়ার নিয়ম
