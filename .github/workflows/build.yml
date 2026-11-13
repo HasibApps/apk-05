@@ -78,9 +78,9 @@ jobs:
       # Publish a release on pushes to the main branch, or on a manual run with
       # "publish_release" enabled. Never from pull requests.
       #
-      # The tag is "v<versionName>" as read from the APK. A new tag is created at
-      # the tip of the default branch, so merge into main before releasing a new
-      # version: a manual run from another branch would tag main, not that branch.
+      # The tag is "v<versionName>" as read from the APK. target_commitish pins
+      # the new tag to the exact commit that was built, so a manual run from a
+      # non-default branch tags that branch's commit — not the default branch.
       - name: Publish GitHub Release
         if: >-
           github.event_name != 'pull_request' &&
@@ -89,6 +89,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.apk.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           name: HSC Guide ${{ steps.apk.outputs.tag }}
           body_path: dist/release-notes.md
           draft: false
