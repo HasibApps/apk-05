@@ -6,10 +6,10 @@
 
 **একাদশ-দ্বাদশ (HSC 26) শিক্ষার্থীদের জন্য সম্পূর্ণ গাইড — মূল বই, টেস্ট পেপার ও অফলাইন PDF রিডার**
 
-[![Build & Release APK](https://github.com/HasibApps/apk-05/actions/workflows/build.yml/badge.svg)](https://github.com/HasibApps/apk-05/actions/workflows/build.yml)
+[![Build & Release APK](https://github.com/HasibApps/apk-05/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/HasibApps/apk-05/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/HasibApps/apk-05?label=release&color=00C875)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/HasibApps/apk-05/total?color=00B8D9)](https://github.com/HasibApps/apk-05/releases)
-[![APK Size](https://img.shields.io/badge/APK-7.1%20MB-00C875)](https://github.com/HasibApps/apk-05/releases/latest)
+[![APK Size](https://img.shields.io/badge/APK-6.86%20MB-00C875)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Android](https://img.shields.io/badge/Android-7.0%2B%20(API%2024)-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
@@ -25,8 +25,8 @@
 
 | ধরন | ফাইল | সাইজ | বিবরণ |
 | :-- | :-- | :-- | :-- |
-| 🟢 **Release (সাইন করা)** | **[HscGuide-v4.0.0-release.apk](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-release.apk)** | 7.10 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
-| 🟡 **Debug** | [HscGuide-v4.0.0-debug.apk](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-debug.apk) | 8.41 MB | টেস্টিং / ডেভেলপারদের জন্য |
+| 🟢 **Release (সাইন করা)** | **[HscGuide-v4.0.0-release.apk](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-release.apk)** | 6.86 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
+| 🟡 **Debug** | [HscGuide-v4.0.0-debug.apk](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-debug.apk) | 8.44 MB | টেস্টিং / ডেভেলপারদের জন্য |
 | 🔁 **সবসময় সর্বশেষ** | [HscGuide-release.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-release.apk) | — | সর্বশেষ রিলিজের সাইন করা APK |
 | 📄 **সব ভার্সন** | [Releases পেজ](https://github.com/HasibApps/apk-05/releases) | — | পুরোনো ও নতুন সব ভার্সন |
 
@@ -39,9 +39,9 @@
 | **অ্যাপের নাম** | HSC গাইড (HSC Guide) |
 | **Version** | `4.0.0` · versionCode **5** |
 | **Package / Application ID** | `com.hasib.guide` |
-| **Release ফাইল** | `HscGuide-v4.0.0-release.apk` · 7.10 MB |
-| **Debug ফাইল** | `HscGuide-v4.0.0-debug.apk` · 8.41 MB |
-| **SHA-256 (release)** | `__SHA256_RELEASE__` |
+| **Release ফাইল** | `HscGuide-v4.0.0-release.apk` · 7,193,912 bytes (6.86 MB) |
+| **Debug ফাইল** | `HscGuide-v4.0.0-debug.apk` · 8,850,289 bytes (8.44 MB) |
+| **SHA-256 (release)** | `118c4689cc8f66b66d535a97aa792e3e3fdebe6045bf4e7287777544ee35d0d0` |
 | **সাইনিং** | ✅ apksigner-এ যাচাই করা — v1 + v2 + v3 স্কিম |
 | **সাইনিং সার্টিফিকেট** | `CN=HSC Guide, O=HasibApps, C=BD`<br>SHA-256: `4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2` |
 | **কীস্টোর** | `signing/hscguide-release.p12` (PKCS#12, alias `hscguide`) — CI-তে একই কী দিয়ে সাইন হয় |
@@ -49,7 +49,7 @@
 | **Target / Compile SDK** | 36 / 36.1 — Android 16 |
 | **অনুমতি** | `INTERNET`, `ACCESS_NETWORK_STATE`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_DATA_SYNC`, `POST_NOTIFICATIONS` |
 | **আপডেট** | ✅ v3.0.0-এর উপর সরাসরি ইনস্টল হবে (একই কী, versionCode 4 → 5) |
-| **বিল্ড** | GitHub Actions · commit [`__COMMIT__`](https://github.com/HasibApps/apk-05/commit/__COMMIT__) |
+| **বিল্ড** | GitHub Actions · commit [`c60de38`](https://github.com/HasibApps/apk-05/commit/c60de3843c56dbf40b501dbdb913ae411e595d04) |
 
 <details>
 <summary><b>✅ ইনস্টল করে যাচাই করবেন কীভাবে</b></summary>
@@ -57,7 +57,7 @@
 ```bash
 # ডাউনলোড করা ফাইলের SHA-256 মিলিয়ে দেখুন
 sha256sum HscGuide-v4.0.0-release.apk
-# __SHA256_RELEASE__
+# 118c4689cc8f66b66d535a97aa792e3e3fdebe6045bf4e7287777544ee35d0d0
 
 # সিগনেচার ও সার্টিফিকেট যাচাই (Android SDK build-tools দরকার)
 apksigner verify --verbose --print-certs HscGuide-v4.0.0-release.apk
