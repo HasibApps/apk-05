@@ -1,0 +1,6 @@
+{
+  "name": "HSC গাইড",
+  "description": "একাদশ-দ্বাদশ শ্রেণির (HSC 26) সম্পূর্ণ গাইড, মূল বই, টেস্ট পেপার, অফলাইন PDF রিডার ও অ্যাডমিন ম্যানেজমেন্ট অ্যাপ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

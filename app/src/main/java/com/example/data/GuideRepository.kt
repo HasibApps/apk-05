@@ -8,17 +8,30 @@ import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.coroutineContext
+
+/** ইউজার নিজে ডাউনলোড বাতিল করলে এই exception ছোড়া হয়। */
+class DownloadCancelledException : IOException("ডাউনলোড বাতিল করা হয়েছে")
 
 class GuideRepository private constructor(context: Context) {
 
@@ -35,12 +48,32 @@ class GuideRepository private constructor(context: Context) {
     private val dbAdapter = moshi.adapter(GuideDatabase::class.java).indent("  ")
     private val downloadsAdapter = moshi.adapter(DownloadedPdfStore::class.java).indent("  ")
 
+    private val storeLock = Any()
+
+    /** Google Drive এর confirm-পেজ কুকি ধরে রাখার জন্য ছোট in-memory CookieJar। */
+    private class MemoryCookieJar : CookieJar {
+        private val store = ConcurrentHashMap<String, List<Cookie>>()
+
+        override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+            val old = store[url.host].orEmpty().filter { o -> cookies.none { it.name == o.name } }
+            store[url.host] = old + cookies
+        }
+
+        override fun loadForRequest(url: HttpUrl): List<Cookie> {
+            val now = System.currentTimeMillis()
+            return store[url.host].orEmpty().filter { it.expiresAt > now && it.matches(url) }
+        }
+    }
+
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(90, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .cookieJar(MemoryCookieJar())
         .followRedirects(true)
         .followSslRedirects(true)
         .build()
+
+    private val activeCalls = ConcurrentHashMap<String, CopyOnWriteArrayList<Call>>()
 
     @Volatile
     private var cachedDb: GuideDatabase? = null
@@ -86,13 +119,13 @@ class GuideRepository private constructor(context: Context) {
         return fresh
     }
 
-    fun getDownloadedPdfs(): List<DownloadedPdfMeta> {
+    fun getDownloadedPdfs(): List<DownloadedPdfMeta> = synchronized(storeLock) {
         val store = loadDownloadsStore()
         val valid = store.items.filter { File(it.pdfPath).exists() }
         if (valid.size != store.items.size) {
             saveDownloadsStore(DownloadedPdfStore(valid.toMutableList()))
         }
-        return valid.sortedByDescending { it.downloadedAtMillis }
+        valid.sortedByDescending { it.downloadedAtMillis }
     }
 
     fun findDownloadedByUrl(url: String): DownloadedPdfMeta? {
@@ -101,40 +134,52 @@ class GuideRepository private constructor(context: Context) {
     }
 
     fun deleteDownloadedPdf(id: String) {
-        val store = loadDownloadsStore()
-        val target = store.items.firstOrNull { it.id == id }
-        if (target != null) {
-            File(target.pdfPath).delete()
-            File(target.thumbnailPath).delete()
-            store.items.removeAll { it.id == id }
-            saveDownloadsStore(store)
+        synchronized(storeLock) {
+            val store = loadDownloadsStore()
+            val target = store.items.firstOrNull { it.id == id }
+            if (target != null) {
+                File(target.pdfPath).delete()
+                File(target.thumbnailPath).delete()
+                store.items.removeAll { it.id == id }
+                saveDownloadsStore(store)
+            }
         }
     }
 
-    suspend fun downloadPdfForOffline(
+    /** চলমান নেটওয়ার্ক কল (যেটা এই URL এর জন্য) তাৎক্ষণিক বন্ধ করে। */
+    fun cancelCalls(url: String) {
+        activeCalls.remove(url)?.forEach { it.cancel() }
+    }
+
+    /**
+     * PDF ডাউনলোড করে অফলাইনে সেভ করে এবং প্রথম পৃষ্ঠার থাম্বনেইল বানায়।
+     * [onProgress] এ (এ পর্যন্ত ডাউনলোড হওয়া বাইট, মোট বাইট) আসে; মোট জানা না থাকলে -1।
+     */
+    suspend fun downloadPdfWithStats(
         url: String,
         title: String,
         subject: String,
-        onProgress: (Int) -> Unit
+        isCancelled: () -> Boolean = { false },
+        onProgress: (downloaded: Long, total: Long) -> Unit
     ): Result<DownloadedPdfMeta> = withContext(Dispatchers.IO) {
-        runCatching {
-            val id = urlToId(url)
-            val targetPdf = File(pdfDir, "$id.pdf")
-            val targetThumb = File(thumbDir, "$id.png")
-            val tempFile = File(pdfDir, "$id.tmp")
+        val id = urlToId(url)
+        val targetPdf = File(pdfDir, "$id.pdf")
+        val targetThumb = File(thumbDir, "$id.jpg")
+        val tempFile = File(pdfDir, "$id.${System.nanoTime()}.tmp")
+        val job: Job? = coroutineContext[Job]
+        val shouldStop: () -> Boolean = { isCancelled() || (job != null && !job.isActive) }
 
-            val downloadUrl = resolveDirectDownloadUrl(url)
-            downloadWithDriveBypass(downloadUrl, tempFile, onProgress)
-
-            if (!isValidPdfFile(tempFile)) {
-                tempFile.delete()
-                throw IllegalStateException("এই লিংকটি সরাসরি PDF ফাইল নয়। সঠিক Google Drive বা PDF লিংক ব্যবহার করুন।")
-            }
+        try {
+            fetchPdfToFile(url, url, tempFile, onProgress, shouldStop)
 
             if (targetPdf.exists()) targetPdf.delete()
-            tempFile.renameTo(targetPdf)
+            if (!tempFile.renameTo(targetPdf)) {
+                tempFile.copyTo(targetPdf, overwrite = true)
+                tempFile.delete()
+            }
 
-            val pageCount = generateThumbnailAndCountPages(targetPdf, targetThumb)
+            val pageCount = runCatching { generateThumbnailAndCountPages(targetPdf, targetThumb) }
+                .getOrDefault(0)
 
             val meta = DownloadedPdfMeta(
                 id = id,
@@ -148,52 +193,147 @@ class GuideRepository private constructor(context: Context) {
                 downloadedAtMillis = System.currentTimeMillis()
             )
 
-            val store = loadDownloadsStore()
-            store.items.removeAll { it.id == id }
-            store.items.add(0, meta)
-            saveDownloadsStore(store)
+            synchronized(storeLock) {
+                val store = loadDownloadsStore()
+                store.items.removeAll { it.id == id }
+                store.items.add(0, meta)
+                saveDownloadsStore(store)
+            }
 
-            meta
+            Result.success(meta)
+        } catch (e: CancellationException) {
+            tempFile.delete()
+            throw e
+        } catch (e: Throwable) {
+            tempFile.delete()
+            Result.failure(e)
+        } finally {
+            activeCalls.remove(url)
         }
     }
 
-    private fun downloadWithDriveBypass(
+    /** পুরনো সিগনেচার (শুধু শতকরা হার) — PdfViewer এর সাথে সামঞ্জস্যের জন্য। */
+    suspend fun downloadPdfForOffline(
+        url: String,
+        title: String,
+        subject: String,
+        onProgress: (Int) -> Unit
+    ): Result<DownloadedPdfMeta> = downloadPdfWithStats(url, title, subject) { d, t ->
+        if (t > 0) onProgress(((d * 100) / t).toInt().coerceIn(0, 100))
+    }
+
+    /** থাম্বনেইল না থাকলে (যেমন আগের ভার্সনে ডাউনলোড করা PDF) নতুন করে বানায়। */
+    suspend fun ensureThumbnail(meta: DownloadedPdfMeta): Boolean = withContext(Dispatchers.IO) {
+        val thumb = File(meta.thumbnailPath)
+        if (thumb.exists() && thumb.length() > 0) return@withContext true
+        val pdf = File(meta.pdfPath)
+        if (!pdf.exists()) return@withContext false
+        runCatching {
+            generateThumbnailAndCountPages(pdf, thumb)
+            thumb.exists() && thumb.length() > 0
+        }.getOrDefault(false)
+    }
+
+    // ---------------------------------------------------------------------------------------
+    // Download internals
+    // ---------------------------------------------------------------------------------------
+
+    private fun trackedCall(key: String, request: Request): Call {
+        val call = httpClient.newCall(request)
+        activeCalls.getOrPut(key) { CopyOnWriteArrayList() }.add(call)
+        return call
+    }
+
+    private fun fetchPdfToFile(
+        key: String,
+        sourceUrl: String,
+        outFile: File,
+        onProgress: (Long, Long) -> Unit,
+        shouldStop: () -> Boolean
+    ) {
+        val driveId = extractGoogleDriveId(sourceUrl)
+        val candidates = if (driveId != null) {
+            listOf(
+                "https://drive.usercontent.google.com/download?id=$driveId&export=download&confirm=t&authuser=0",
+                "https://drive.google.com/uc?export=download&id=$driveId"
+            )
+        } else {
+            listOf(sourceUrl.trim())
+        }
+
+        var lastError: Throwable? = null
+        for (candidate in candidates) {
+            for (attempt in 1..2) {
+                try {
+                    if (shouldStop()) throw DownloadCancelledException()
+                    outFile.delete()
+                    downloadFromUrl(key, candidate, outFile, onProgress, shouldStop, 0)
+                    if (isValidPdfFile(outFile)) return
+                    lastError = IllegalStateException(NOT_PDF_MESSAGE)
+                    break
+                } catch (e: DownloadCancelledException) {
+                    throw e
+                } catch (e: IOException) {
+                    if (shouldStop()) throw DownloadCancelledException()
+                    lastError = e
+                } catch (e: IllegalStateException) {
+                    lastError = e
+                    break
+                }
+            }
+        }
+        throw lastError ?: IllegalStateException(NOT_PDF_MESSAGE)
+    }
+
+    private fun downloadFromUrl(
+        key: String,
         url: String,
         outFile: File,
-        onProgress: (Int) -> Unit
+        onProgress: (Long, Long) -> Unit,
+        shouldStop: () -> Boolean,
+        hop: Int
     ) {
         val request = Request.Builder()
             .url(url)
-            .header("User-Agent", "Mozilla/5.0 (Android 14; Mobile) AppleWebKit/537.36")
+            .header("User-Agent", USER_AGENT)
+            // gzip বন্ধ রাখলে সার্ভারের আসল Content-Length (ফাইলের সাইজ) পাওয়া যায়
+            .header("Accept-Encoding", "identity")
             .build()
 
-        httpClient.newCall(request).execute().use { response ->
+        trackedCall(key, request).execute().use { response ->
             if (!response.isSuccessful) {
-                throw IllegalStateException("ডাউনলোড ব্যর্থ হয়েছে (Code: ${response.code})")
+                throw IllegalStateException("ডাউনলোড ব্যর্থ হয়েছে (Code: ${response.code})")
             }
-            val body = response.body ?: throw IllegalStateException("ফাইল খালি রয়েছে")
+            val body = response.body ?: throw IllegalStateException("ফাইল খালি রয়েছে")
             val contentType = body.contentType()?.toString()?.lowercase(Locale.ROOT).orEmpty()
 
             if (contentType.contains("text/html")) {
-                val html = body.string()
-                val confirmUrl = extractDriveConfirmUrl(html, url)
-                    ?: throw IllegalStateException("Google Drive থেকে PDF ডাউনলোড করা যায়নি (পাবলিক অ্যাক্সেস পরীক্ষা করুন)।")
-
-                val confirmReq = Request.Builder()
-                    .url(confirmUrl)
-                    .header("User-Agent", "Mozilla/5.0 (Android 14; Mobile) AppleWebKit/537.36")
-                    .build()
-
-                httpClient.newCall(confirmReq).execute().use { confirmResp ->
-                    if (!confirmResp.isSuccessful) {
-                        throw IllegalStateException("ডাউনলোড ব্যর্থ হয়েছে (Code: ${confirmResp.code})")
-                    }
-                    val confirmBody = confirmResp.body ?: throw IllegalStateException("ফাইল পাওয়া যায়নি")
-                    streamToFile(confirmBody.byteStream(), confirmBody.contentLength(), outFile, onProgress)
+                if (hop >= 2 || extractGoogleDriveId(url) == null) {
+                    throw IllegalStateException(
+                        if (extractGoogleDriveId(url) == null) NOT_PDF_MESSAGE else DRIVE_FAIL_MESSAGE
+                    )
                 }
+                val html = body.string()
+                checkDriveHtmlErrors(html)
+                val confirmUrl = extractDriveConfirmUrl(html, url)
+                    ?: throw IllegalStateException(DRIVE_FAIL_MESSAGE)
+                downloadFromUrl(key, confirmUrl, outFile, onProgress, shouldStop, hop + 1)
             } else {
-                streamToFile(body.byteStream(), body.contentLength(), outFile, onProgress)
+                streamToFile(body.byteStream(), body.contentLength(), outFile, onProgress, shouldStop)
             }
+        }
+    }
+
+    private fun checkDriveHtmlErrors(html: String) {
+        if (html.contains("Quota exceeded", ignoreCase = true) ||
+            html.contains("Too many users have viewed or downloaded", ignoreCase = true)
+        ) {
+            throw IllegalStateException("Google Drive এর ডাউনলোড সীমা শেষ হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।")
+        }
+        if (html.contains("accounts.google.com/ServiceLogin", ignoreCase = true) &&
+            !html.contains("download-form", ignoreCase = true)
+        ) {
+            throw IllegalStateException("ফাইলটি পাবলিক নয়। Drive এ “Anyone with the link” সেট করুন।")
         }
     }
 
@@ -201,27 +341,26 @@ class GuideRepository private constructor(context: Context) {
         input: java.io.InputStream,
         totalBytes: Long,
         outFile: File,
-        onProgress: (Int) -> Unit
+        onProgress: (Long, Long) -> Unit,
+        shouldStop: () -> Boolean
     ) {
         input.use { stream ->
             FileOutputStream(outFile).use { fos ->
-                val buffer = ByteArray(16 * 1024)
+                val buffer = ByteArray(64 * 1024)
                 var downloaded = 0L
-                var read: Int
-                var lastPct = -1
-                while (stream.read(buffer).also { read = it } != -1) {
+                while (true) {
+                    if (shouldStop()) throw DownloadCancelledException()
+                    val read = stream.read(buffer)
+                    if (read == -1) break
                     fos.write(buffer, 0, read)
                     downloaded += read
-                    if (totalBytes > 0) {
-                        val pct = ((downloaded * 100) / totalBytes).toInt().coerceIn(0, 100)
-                        if (pct != lastPct) {
-                            lastPct = pct
-                            onProgress(pct)
-                        }
-                    }
+                    onProgress(downloaded, totalBytes)
                 }
                 fos.flush()
-                onProgress(100)
+                if (totalBytes > 0 && downloaded < totalBytes) {
+                    throw IOException("ডাউনলোড অসম্পূর্ণ থেকে গেছে")
+                }
+                onProgress(downloaded, if (totalBytes > 0) totalBytes else downloaded)
             }
         }
     }
@@ -237,7 +376,7 @@ class GuideRepository private constructor(context: Context) {
             val params = mutableListOf<String>()
             idMatch?.let { params.add("id=${it.groupValues[1]}") }
             params.add("export=download")
-            confirmMatch?.let { params.add("confirm=${it.groupValues[1]}") }
+            params.add("confirm=${confirmMatch?.groupValues?.get(1) ?: "t"}")
             uuidMatch?.let { params.add("uuid=${it.groupValues[1]}") }
             val sep = if (baseAction.contains("?")) "&" else "?"
             return "$baseAction$sep${params.joinToString("&")}"
@@ -248,7 +387,7 @@ class GuideRepository private constructor(context: Context) {
         }
         val fileId = extractGoogleDriveId(originalUrl)
         if (fileId != null) {
-            return "https://drive.usercontent.google.com/download?id=$fileId&export=download&confirm=t"
+            return "https://drive.usercontent.google.com/download?id=$fileId&export=download&confirm=t&authuser=0"
         }
         return null
     }
@@ -260,6 +399,10 @@ class GuideRepository private constructor(context: Context) {
         return String(header, Charsets.US_ASCII).startsWith("%PDF")
     }
 
+    /**
+     * প্রথম পৃষ্ঠা থেকে বর্গাকার থাম্বনেইল বানায় (ফাইল-ম্যানেজারের মতো: ছবি পুরো ঘর ভরে থাকে)।
+     * পোর্ট্রেট পৃষ্ঠার ওপরের অংশ, ল্যান্ডস্কেপ পৃষ্ঠার মাঝের অংশ দেখানো হয়।
+     */
     private fun generateThumbnailAndCountPages(pdfFile: File, thumbFile: File): Int {
         var pageCount = 0
         ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
@@ -267,34 +410,34 @@ class GuideRepository private constructor(context: Context) {
                 pageCount = renderer.pageCount
                 if (pageCount > 0) {
                     renderer.openPage(0).use { page ->
-                        val targetSize = 240
-                        val aspect = page.width.toFloat() / page.height.coerceAtLeast(1)
-                        val renderW: Int
-                        val renderH: Int
-                        if (aspect >= 1f) {
-                            renderW = targetSize
-                            renderH = (targetSize / aspect).toInt().coerceAtLeast(1)
-                        } else {
-                            renderH = targetSize
-                            renderW = (targetSize * aspect).toInt().coerceAtLeast(1)
-                        }
-                        val bmp = Bitmap.createBitmap(targetSize, targetSize, Bitmap.Config.ARGB_8888)
-                        val canvas = Canvas(bmp)
-                        canvas.drawColor(Color.WHITE)
+                        val target = THUMB_SIZE
+                        val shortSide = minOf(page.width, page.height).coerceAtLeast(1)
+                        val scale = target.toFloat() / shortSide
+                        val renderW = (page.width * scale).toInt().coerceAtLeast(1)
+                        val renderH = (page.height * scale).toInt().coerceAtLeast(1)
 
                         val pageBmp = Bitmap.createBitmap(renderW, renderH, Bitmap.Config.ARGB_8888)
                         pageBmp.eraseColor(Color.WHITE)
                         page.render(pageBmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-                        val left = (targetSize - renderW) / 2f
-                        val top = (targetSize - renderH) / 2f
+                        val out = Bitmap.createBitmap(target, target, Bitmap.Config.ARGB_8888)
+                        val canvas = Canvas(out)
+                        canvas.drawColor(Color.WHITE)
+                        val left = -((renderW - target) / 2f)
+                        val top = if (renderH > renderW) 0f else -((renderH - target) / 2f)
                         canvas.drawBitmap(pageBmp, left, top, null)
                         pageBmp.recycle()
 
-                        FileOutputStream(thumbFile).use { fos ->
-                            bmp.compress(Bitmap.CompressFormat.PNG, 92, fos)
+                        thumbFile.parentFile?.mkdirs()
+                        val format = if (thumbFile.name.endsWith(".png", ignoreCase = true)) {
+                            Bitmap.CompressFormat.PNG
+                        } else {
+                            Bitmap.CompressFormat.JPEG
                         }
-                        bmp.recycle()
+                        FileOutputStream(thumbFile).use { fos ->
+                            out.compress(format, 90, fos)
+                        }
+                        out.recycle()
                     }
                 }
             }
@@ -314,6 +457,13 @@ class GuideRepository private constructor(context: Context) {
     }
 
     companion object {
+        private const val THUMB_SIZE = 320
+        private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
+        private const val NOT_PDF_MESSAGE =
+            "এই লিংকটি সরাসরি PDF ফাইল নয়। সঠিক Google Drive বা PDF লিংক ব্যবহার করুন।"
+        private const val DRIVE_FAIL_MESSAGE =
+            "Google Drive থেকে PDF ডাউনলোড করা যায়নি (ফাইলটি পাবলিক কিনা পরীক্ষা করুন)।"
+
         @Volatile
         private var instance: GuideRepository? = null
 
