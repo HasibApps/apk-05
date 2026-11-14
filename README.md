@@ -2,65 +2,67 @@
 
 <img src="docs/banner.png" alt="HSC Guide — একাদশ-দ্বাদশ শ্রেণির সম্পূর্ণ গাইড" width="100%">
 
-# 📚 HSC গাইড · v4.0.0
+# 📚 HSC গাইড · v5.0.0
 
 **একাদশ-দ্বাদশ (HSC 26) শিক্ষার্থীদের জন্য সম্পূর্ণ গাইড — মূল বই, টেস্ট পেপার ও অফলাইন PDF রিডার**
 
 [![Build & Release APK](https://github.com/HasibApps/apk-05/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/HasibApps/apk-05/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/HasibApps/apk-05?label=release&color=00C875)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/HasibApps/apk-05/total?color=00B8D9)](https://github.com/HasibApps/apk-05/releases)
-[![APK Size](https://img.shields.io/badge/APK-6.86%20MB-00C875)](https://github.com/HasibApps/apk-05/releases/latest)
+[![APK Size](https://img.shields.io/badge/APK-14.92%20MB-00C875)](https://github.com/HasibApps/apk-05/releases/latest)
 [![Android](https://img.shields.io/badge/Android-7.0%2B%20(API%2024)-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 
-### [⬇️ APK v4.0.0 ডাউনলোড করুন](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-release.apk)
+### [⬇️ APK v5.0.0 ডাউনলোড করুন](https://github.com/HasibApps/apk-05/releases/download/v5.0.0/HscGuide-v5.0.0-release.apk)
 
-<sub>Release (সাইন করা) · Android 7.0+ · GitHub Actions-এ বিল্ড ও সাইন করা · v3.0.0 থেকে সরাসরি আপডেটযোগ্য</sub>
+<sub>Release (সাইন করা) · Android 7.0+ · GitHub Actions-এ বিল্ড ও সাইন করা · v4.0.0 থেকে সরাসরি আপডেটযোগ্য</sub>
 
 </div>
 
 ---
 
-## 📲 ডাউনলোড — v4.0.0 (সর্বশেষ)
+## 📲 ডাউনলোড — v5.0.0 (সর্বশেষ)
 
 | ধরন | ফাইল | সাইজ | বিবরণ |
 | :-- | :-- | :-- | :-- |
-| 🟢 **Release (সাইন করা)** | **[HscGuide-v4.0.0-release.apk](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-release.apk)** | 6.86 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
-| 🟡 **Debug** | [HscGuide-v4.0.0-debug.apk](https://github.com/HasibApps/apk-05/releases/download/v4.0.0/HscGuide-v4.0.0-debug.apk) | 8.44 MB | টেস্টিং / ডেভেলপারদের জন্য |
+| 🟢 **Release (সাইন করা)** | **[HscGuide-v5.0.0-release.apk](https://github.com/HasibApps/apk-05/releases/download/v5.0.0/HscGuide-v5.0.0-release.apk)** | 14.92 MB | সাধারণ ব্যবহারের জন্য — **এটাই ইনস্টল করুন** |
+| 🟡 **Debug** | [HscGuide-v5.0.0-debug.apk](https://github.com/HasibApps/apk-05/releases/download/v5.0.0/HscGuide-v5.0.0-debug.apk) | 17.12 MB | টেস্টিং / ডেভেলপারদের জন্য |
 | 🔁 **সবসময় সর্বশেষ** | [HscGuide-release.apk](https://github.com/HasibApps/apk-05/releases/latest/download/HscGuide-release.apk) | — | সর্বশেষ রিলিজের সাইন করা APK |
 | 📄 **সব ভার্সন** | [Releases পেজ](https://github.com/HasibApps/apk-05/releases) | — | পুরোনো ও নতুন সব ভার্সন |
 
 > নির্দিষ্ট কোনো ভার্সন: `https://github.com/HasibApps/apk-05/releases/download/v<ভার্সন>/HscGuide-v<ভার্সন>-release.apk`
+>
+> 📈 v4.0.0-এর (6.86 MB) তুলনায় সাইজ বেড়েছে — নতুন **পাসওয়ার্ড-সুরক্ষিত PDF** ফিচারের জন্য `pdfbox-android` লাইব্রেরি যুক্ত হয়েছে।
 
-## 🔐 APK তথ্য (v4.0.0)
+## 🔐 APK তথ্য (v5.0.0)
 
 | | |
 | :-- | :-- |
 | **অ্যাপের নাম** | HSC গাইড (HSC Guide) |
-| **Version** | `4.0.0` · versionCode **5** |
+| **Version** | `5.0.0` · versionCode **6** |
 | **Package / Application ID** | `com.hasib.guide` |
-| **Release ফাইল** | `HscGuide-v4.0.0-release.apk` · 7,193,912 bytes (6.86 MB) |
-| **Debug ফাইল** | `HscGuide-v4.0.0-debug.apk` · 8,850,289 bytes (8.44 MB) |
-| **SHA-256 (release)** | `118c4689cc8f66b66d535a97aa792e3e3fdebe6045bf4e7287777544ee35d0d0` |
-| **সাইনিং** | ✅ apksigner-এ যাচাই করা — v1 + v2 + v3 স্কিম |
-| **সাইনিং সার্টিফিকেট** | `CN=HSC Guide, O=HasibApps, C=BD`<br>SHA-256: `4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2` |
+| **Release ফাইল** | `HscGuide-v5.0.0-release.apk` · 15,649,006 bytes (14.92 MB) |
+| **Debug ফাইল** | `HscGuide-v5.0.0-debug.apk` · 17,955,305 bytes (17.12 MB) |
+| **SHA-256 (release)** | `bc3783f176a50a42f87028d3c7820ac16eb30dbabc8f39d945092c85ea9df201` |
+| **সাইনিং** | ✅ apksigner-এ যাচাই করা — v2 + v3 স্কিম |
+| **সাইনিং সার্টিফিকেট** | `CN=HSC Guide, O=HasibApps, C=BD`<br>SHA-256: `4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2` — **v4.0.0-এর সাথে হুবহু একই কী** |
 | **কীস্টোর** | `signing/hscguide-release.p12` (PKCS#12, alias `hscguide`) — CI-তে একই কী দিয়ে সাইন হয় |
 | **Min SDK** | 24 — Android 7.0 Nougat |
 | **Target / Compile SDK** | 36 / 36.1 — Android 16 |
 | **অনুমতি** | `INTERNET`, `ACCESS_NETWORK_STATE`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_DATA_SYNC`, `POST_NOTIFICATIONS` |
-| **আপডেট** | ✅ v3.0.0-এর উপর সরাসরি ইনস্টল হবে (একই কী, versionCode 4 → 5) |
-| **বিল্ড** | GitHub Actions · commit [`c60de38`](https://github.com/HasibApps/apk-05/commit/c60de3843c56dbf40b501dbdb913ae411e595d04) |
+| **আপডেট** | ✅ v4.0.0-এর উপর সরাসরি ইনস্টল হবে (একই কী, versionCode 5 → 6) — CI-তে v4.0.0 APK-এর সাথে মিলিয়ে যাচাই করা |
+| **বিল্ড** | GitHub Actions · commit [`c27db62`](https://github.com/HasibApps/apk-05/commit/c27db62dd3672caf61cb19ed8f9403e9dc160eeb) · রিলিজ ১৪ নভেম্বর ২০২৬ |
 
 <details>
 <summary><b>✅ ইনস্টল করে যাচাই করবেন কীভাবে</b></summary>
 
 ```bash
 # ডাউনলোড করা ফাইলের SHA-256 মিলিয়ে দেখুন
-sha256sum HscGuide-v4.0.0-release.apk
-# 118c4689cc8f66b66d535a97aa792e3e3fdebe6045bf4e7287777544ee35d0d0
+sha256sum HscGuide-v5.0.0-release.apk
+# bc3783f176a50a42f87028d3c7820ac16eb30dbabc8f39d945092c85ea9df201
 
 # সিগনেচার ও সার্টিফিকেট যাচাই (Android SDK build-tools দরকার)
-apksigner verify --verbose --print-certs HscGuide-v4.0.0-release.apk
+apksigner verify --verbose --print-certs HscGuide-v5.0.0-release.apk
 # Signer #1 certificate SHA-256 digest: 4ca662acc8a1af9808848f8e685180cbe7ec37cf0e760c113f25ab6fd13a65a2
 ```
 
@@ -74,20 +76,18 @@ apksigner verify --verbose --print-certs HscGuide-v4.0.0-release.apk
 3. **Install** চাপুন, তারপর **Open**।
 4. প্রথমবার খুললেই অ্যাপ নিজে থেকেই ৭টি বিষয়ের ডিফল্ট ডাটা তৈরি করে নেবে — অ্যাডমিন প্যানেলে গিয়ে লিংক বদলাতে পারবেন।
 
-> 🔄 **আপডেট (v1.x / v2.x / v3.0.0 → v4.0.0):** আগের Release APK ইনস্টল থাকলে **আনইনস্টল করতে হবে না** — একই প্যাকেজ (`com.hasib.guide`) ও একই সাইনিং কী (সার্টিফিকেট SHA-256 `4ca662ac…a65a2`), আর versionCode **4 → 5**। অ্যাপ, ডাউনলোড করা PDF ও অ্যাডমিন ডাটা সব অটুট থাকবে।
+> 🔄 **আপডেট (v1.x / v2.x / v3.0.0 / v4.0.0 → v5.0.0):** আগের Release APK ইনস্টল থাকলে **আনইনস্টল করতে হবে না** — একই প্যাকেজ (`com.hasib.guide`) ও একই সাইনিং কী (সার্টিফিকেট SHA-256 `4ca662ac…a65a2`), আর versionCode **5 → 6**। অ্যাপ, ডাউনলোড করা PDF, সংরক্ষিত PDF পাসওয়ার্ড ও অ্যাডমিন ডাটা সব অটুট থাকবে।
 >
 > ⚠️ Debug APK ইনস্টল করা থাকলে আগে সেটি আনইনস্টল করে নিন — Debug ও Release-এর সিগনেচার আলাদা।
 
-## 🆕 v4.0.0-এ নতুন
+## 🆕 v5.0.0-এ নতুন
 
-- ⬇️ **ব্যাকগ্রাউন্ড ডাউনলোড** — নতুন Foreground Service; অ্যাপ থেকে বেরিয়ে গেলেও, স্ক্রিন লক থাকলেও PDF ডাউনলোড চলতে থাকে।
-- 🔔 **প্রোগ্রেস নোটিফিকেশন** — লাইভ শতকরা হিসেব, ডাউনলোড হওয়া / মোট সাইজ ও **গতি (MB/s)**; প্রতিটিতে **বাতিল** বাটন, সব মিলিয়ে **সব বাতিল**।
-- 🚀 **একসাথে ১০টি ডাউনলোড** — কিউ সিস্টেম; বাকিগুলো "অপেক্ষায় আছে" হয়ে লাইনে থাকে, শেষ হলে অটো শুরু হয়।
-- 📊 **সারিতে প্রোগ্রেস বার** — বিষয় পেজের প্রতিটি PDF-এর নিচে সরু প্রোগ্রেস বার ও গতি; চলাকালীন ডাউনলোড আইকনটি ✕ (বাতিল)-এ বদলায়।
-- 🖼️ **উন্নত থাম্বনেইল** — প্রথম পৃষ্ঠা থেকে ৩২০px বর্গাকার JPEG থাম্বনেইল; পুরোনো ডাউনলোডের থাম্বনেইল অভাবে অ্যাপ নিজেই বানিয়ে নেয়।
-- 🔁 **Drive ডাউনলোডে নির্ভরযোগ্যতা** — একাধিক Drive এন্ডপয়েন্ট অটো-ট্রাই, কুকি রাখা, কোট-শেষ/প্রাইভেট ফাইলের পরিষ্কার বাংলা মেসেজ, অসম্পূর্ণ ডাউনলোড শনাক্ত করে পুনরায় চেষ্টা।
-- 🐛 **স্থিতিশীলতা** — থ্রেড-সেফ ডাউনলোড স্টোর, স্ক্রল পজিশন সংরক্ষণ, ৬৪KB বাফারে দ্রুত ডাউনলোড।
-- 🔐 **একই সাইনিং কী** — প্যাকেজ `com.hasib.guide`, versionCode 5 → **v3.0.0 আনইনস্টল না করেই আপডেট**।
+- 🔓 **পাসওয়ার্ড-সুরক্ষিত PDF সাপোর্ট** — পাসওয়ার্ড দিয়ে লক করা PDF এখন অ্যাপের ভেতরেই খোলা যায়; খোলার সময় সুন্দর ডায়ালগে পাসওয়ার্ড চাওয়া হয়।
+- 🧠 **পাসওয়ার্ড মনে রাখে** — একবার সঠিক পাসওয়ার্ড দিলে অ্যাপ সেটা প্রাইভেট স্টোরেজে সংরক্ষণ করে; পরেরবার একই PDF আর পাসওয়ার্ড ছাড়াই খুলে যায়। ভুল পাসওয়ার্ডে পরিষ্কার বাংলা মেসেজসহ আবার চাওয়া হয়।
+- 🛡️ **আসল ফাইল অটুট** — আনলক হয় cache-এর অস্থায়ী কপিতে (`pdfbox-android`), ডাউনলোড করা আসল ফাইল অপরিবর্তিত থাকে; অ্যাপ বন্ধ করলে অস্থায়ী কপি মুছে যায়।
+- ✌️ **জুম এখন শুধু ২ আঙুলের পিঞ্চে** — ডাবল-ট্যাপ জুম, ট্যাপ-হোল্ড-ড্র্যাগ (quick scale) ও স্টাইলাস জুম বন্ধ; পড়ার সময় ভুল ইশারায় আর জুম বদলে যাবে না।
+- 🐛 **PDF খোলা আরও স্থিতিশীল** — renderer সঠিকভাবে খোলা-বন্ধ, ডায়ালগ লিক বন্ধ, পরিষ্কার এরর মেসেজ।
+- 🔐 **একই সাইনিং কী** — প্যাকেজ `com.hasib.guide`, versionCode 6 → **v4.0.0 আনইনস্টল না করেই আপডেট**।
 
 সব ভার্সনের পরিবর্তন: [CHANGELOG.md](CHANGELOG.md)
 
@@ -118,7 +118,8 @@ apksigner verify --verbose --print-certs HscGuide-v4.0.0-release.apk
 | 🚀 **১০টি একসাথে** | ডাউনলোড কিউ — সর্বোচ্চ ১০টি PDF সমান্তরালে, বাকিগুলো অপেক্ষায় |
 | 📴 **সম্পূর্ণ অফলাইন** | একবার ডাউনলোড হলে ইন্টারনেট ছাড়াই পড়া যায় |
 | 🖼️ **অটো থাম্বনেইল** | PDF-এর প্রথম পৃষ্ঠা থেকে বর্গাকার থাম্বনেইল তৈরি হয় |
-| 🔍 **বিল্ট-ইন PDF রিডার** | পিঞ্চ-জুম (২ আঙুল), ডাবল ট্যাপ, স্লাইডার, নির্দিষ্ট পেজে জাম্প |
+| 🔍 **বিল্ট-ইন PDF রিডার** | শুধু ২ আঙুলের পিঞ্চ-জুম, স্লাইডার, নির্দিষ্ট পেজে জাম্প |
+| 🔓 **পাসওয়ার্ড-সুরক্ষিত PDF** | লক করা PDF অ্যাপেই খুলুন — একবার পাসওয়ার্ড দিলে অ্যাপ মনে রাখে |
 | 🔗 **লিংক কপি** | যেকোনো PDF-এর Drive লিংক এক ট্যাপে কপি করে শেয়ার |
 | 🔐 **অ্যাডমিন প্যানেল** | পাসওয়ার্ড দিয়ে আনলক — ফোল্ডার/PDF যোগ, এডিট, ডিলিট, ডিফল্ট রিসেট |
 | 💾 **JSON ব্যাকআপ** | পুরো কনটেন্ট `.json` হিসেবে এক্সপোর্ট ও ইমপোর্ট |
@@ -130,11 +131,12 @@ apksigner verify --verbose --print-certs HscGuide-v4.0.0-release.apk
 বিষয়ভিত্তিক মূল বই ও টেস্ট পেপার Google Drive লিংক থেকে ডাউনলোড করে ফোনে সংরক্ষণ করা যায়,
 তারপর অ্যাপের ভেতরের রিডার দিয়েই পড়া যায় — কোনো তৃতীয় পক্ষের PDF অ্যাপ বা ইন্টারনেট লাগে না।
 
-v3.0.0-তে অ্যাপটি নতুন করে ডিজাইন করা হয়েছিল: বিষয় কার্ড, পত্র ট্যাব, ফোল্ডারভিত্তিক সেকশন,
-আলাদা অফলাইন লাইব্রেরি ও নতুন অ্যাডমিন এডিটর। **v4.0.0-তে** এসেছে ব্যাকগ্রাউন্ড ডাউনলোড সার্ভিস —
+v3.0.0-তে অ্যাপটি নতুন করে ডিজাইন করা হয়েছিল, v4.0.0-তে এসেছে ব্যাকগ্রাউন্ড ডাউনলোড সার্ভিস —
 একসাথে ১০টি PDF নামানো যায়, নোটিফিকেশনে গতি ও প্রোগ্রেস দেখা যায়, আর অ্যাপ থেকে বেরিয়ে গেলেও
-ডাউনলোড থামে না। অ্যাডমিন মোডে নিজের লাইব্রেরি নিজেই গুছিয়ে নিতে পারবেন, আর `.json` ফাইলের
-মাধ্যমে এক ফোনের কনটেন্ট অন্য ফোনে বা বন্ধুদের সাথে শেয়ার করা যায়।
+ডাউনলোড থামে না। **v5.0.0-তে** যুক্ত হয়েছে **পাসওয়ার্ড-সুরক্ষিত PDF সাপোর্ট** — লক করা PDF অ্যাপের
+ভেতরেই খোলা যায়, একবার পাসওয়ার্ড দিলে অ্যাপ মনেও রাখে; সাথে PDF রিডারের জুম এখন শুধু ২ আঙুলের
+পিঞ্চে সীমিত, ফলে পড়ার সময় ভুল ট্যাপে জুম বদলে যাওয়ার সমস্যা নেই। অ্যাডমিন মোডে নিজের লাইব্রেরি
+নিজেই গুছিয়ে নিতে পারবেন, আর `.json` ফাইলের মাধ্যমে এক ফোনের কনটেন্ট অন্য ফোনে বা বন্ধুদের সাথে শেয়ার করা যায়।
 
 ## 🛠️ টেক স্ট্যাক
 
@@ -143,7 +145,7 @@ v3.0.0-তে অ্যাপটি নতুন করে ডিজাইন �
 | **Language** | Kotlin 2.2.10 (AGP-এর বিল্ট-ইন Kotlin সাপোর্ট) |
 | **Build System** | Gradle 9.3.1 · Android Gradle Plugin 9.1.1 · JDK 17 |
 | **UI** | Material 3 (`Theme.Material3.Light.NoActionBar`), ViewBinding, RecyclerView, ConstraintLayout |
-| **PDF** | Android `PdfRenderer` + কাস্টম জুমেবল RecyclerView (কোনো ভারী লাইব্রেরি নেই) |
+| **PDF** | Android `PdfRenderer` + `pdfbox-android 2.0.27.0` (পাসওয়ার্ড-সুরক্ষিত PDF আনলক) + কাস্টম জুমেবল RecyclerView |
 | **Networking** | OkHttp 4.10 (Drive কুকি + একাধিক এন্ডপয়েন্ট ফলব্যাক) |
 | **Background কাজ** | Foreground Service (`PdfDownloadService`, `dataSync`) + Kotlin Coroutines + `Semaphore(10)` |
 | **Storage** | Internal app storage + Moshi/JSON (`guide_database.json`, `downloaded_pdfs.json`) |
@@ -160,18 +162,18 @@ apk-05/
 │       ├── verify-apk.sh           # APK-র সিগনেচার, ভার্সন ও আপডেট যাচাই
 │       └── release-notes.sh        # CHANGELOG.md থেকে রিলিজ নোট তৈরি
 ├── app/
-│   ├── build.gradle.kts            # versioning (4.0.0 / 5) + release signing
+│   ├── build.gradle.kts            # versioning (5.0.0 / 6) + release signing
 │   └── src/main/
 │       ├── AndroidManifest.xml
 │       ├── java/com/example/
 │       │   ├── MainActivity.kt          # হোম: বিষয় গ্রিড + অফলাইন লাইব্রেরি
 │       │   ├── SubjectActivity.kt       # পত্র ট্যাব, মূল বই / Test Paper
-│       │   ├── PdfViewerActivity.kt     # জুমেবল PDF রিডার
+│       │   ├── PdfViewerActivity.kt     # জুমেবল PDF রিডার + পাসওয়ার্ড আনলক
 │       │   ├── AdminPanelActivity.kt    # অ্যাডমিন এডিটর
 │       │   ├── SettingsController.kt    # সেটিংস + JSON ইমপোর্ট/এক্সপোর্ট
 │       │   ├── data/                    # মডেল, রিপোজিটরি, ডিফল্ট ডাটা
 │       │   ├── download/                # PdfDownloadService + DownloadCenter
-│       │   └── pdf/                     # ZoomablePdfRecyclerView
+│       │   └── pdf/                     # ZoomablePdfRecyclerView + PdfPasswordStore
 │       └── res/                    # layout, drawable, font, theme
 ├── docs/
 │   ├── banner.png
@@ -191,13 +193,13 @@ apk-05/
 3. **APK যাচাই** — `apksigner` দিয়ে সিগনেচার, APK-র ভেতরের ভার্সন, এবং আগের রিলিজের উপর সরাসরি আপডেট হবে কি না
    (সিগনেচার ঠিক না থাকলে বিল্ড ফেইল করে, রিলিজ হয় না)
 4. APK গুলো **Artifacts** হিসেবে আপলোড (৯০ দিন সংরক্ষিত)
-5. APK-র `versionName` থেকে ট্যাগ (যেমন `v4.0.0`) নিয়ে **GitHub Release** তৈরি ও APK আপলোড —
+5. APK-র `versionName` থেকে ট্যাগ (যেমন `v5.0.0`) নিয়ে **GitHub Release** তৈরি ও APK আপলোড —
    রিলিজ নোটের "নতুন কী" অংশ আসে [`CHANGELOG.md`](CHANGELOG.md) থেকে
 
 ### 🚀 নতুন ভার্সন ছাড়ার নিয়ম
 
-1. [`app/build.gradle.kts`](app/build.gradle.kts)-এ `versionCode` এক বাড়ান এবং `versionName` বদলান (যেমন `6` ও `"4.1.0"`)।
-2. [`CHANGELOG.md`](CHANGELOG.md)-তে `## v4.1.0` নামে একটি অংশ যোগ করে কী বদলেছে লিখুন।
+1. [`app/build.gradle.kts`](app/build.gradle.kts)-এ `versionCode` এক বাড়ান এবং `versionName` বদলান (যেমন `7` ও `"5.1.0"`)।
+2. [`CHANGELOG.md`](CHANGELOG.md)-তে `## v5.1.0` নামে একটি অংশ যোগ করে কী বদলেছে লিখুন।
 3. `main` ব্রাঞ্চে push / merge করুন — বিল্ড, যাচাই ও Release অটোমেটিক হয়ে যাবে।
 
 **ম্যানুয়ালি চালাতে:** Actions → *Build & Release APK* → **Run workflow** (`publish_release` চালু রাখুন)।
