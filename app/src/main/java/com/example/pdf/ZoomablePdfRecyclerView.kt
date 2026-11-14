@@ -27,14 +27,17 @@ class ZoomablePdfRecyclerView @JvmOverloads constructor(
     private var lastTouchY = 0f
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private var isScaling = false
+    private var lastPointerCount = 0
 
     var onZoomChanged: ((Float) -> Unit)? = null
     var onSingleTap: (() -> Unit)? = null
 
+    // শুধু ২ আঙুলের পিঞ্চেই জুম হবে। ডাবল-ট্যাপ, ট্যাপ-হোল্ড-ড্র্যাগ (quick scale) ও স্টাইলাস জুম বন্ধ।
     private val scaleDetector = ScaleGestureDetector(
         context,
         object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
+                if (lastPointerCount < 2) return false
                 isScaling = true
                 return true
             }
@@ -65,28 +68,31 @@ class ZoomablePdfRecyclerView @JvmOverloads constructor(
     private val gestureDetector = GestureDetector(
         context,
         object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 onSingleTap?.invoke()
-                return true
-            }
-
-            override fun onDoubleTap(e: MotionEvent): Boolean {
-                if (scaleFactor > 1.05f) {
-                    resetZoom()
-                } else {
-                    val target = 2.4f
-                    val ratio = target / scaleFactor
-                    transX = e.x - (e.x - transX) * ratio
-                    transY = e.y - (e.y - transY) * ratio
-                    scaleFactor = target
-                    clampTranslation()
-                    onZoomChanged?.invoke(scaleFactor)
-                    invalidate()
-                }
-                return true
+                return false
             }
         }
-    )
+    ).apply { setIsLongpressEnabled(false) }
+
+    init {
+        scaleDetector.isQuickScaleEnabled = false
+        scaleDetector.isStylusScaleEnabled = false
+    }
+
+    private var lastFedTime = -1L
+    private var lastFedAction = -1
+
+    private fun feedDetectors(e: MotionEvent) {
+        // onInterceptTouchEvent ও onTouchEvent একই event দুইবার পেতে পারে — একবারই প্রসেস করা হবে
+        if (e.eventTime == lastFedTime && e.action == lastFedAction) return
+        lastFedTime = e.eventTime
+        lastFedAction = e.action
+        lastPointerCount = e.pointerCount
+        // শুধু ২+ আঙুল থাকলে স্কেল ডিটেক্টর চলবে; এক আঙুলে কখনোই জুম নয়
+        if (e.pointerCount >= 2 || isScaling) scaleDetector.onTouchEvent(e)
+        gestureDetector.onTouchEvent(e)
+    }
 
     fun resetZoom() {
         scaleFactor = 1.0f
@@ -109,8 +115,7 @@ class ZoomablePdfRecyclerView @JvmOverloads constructor(
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        scaleDetector.onTouchEvent(e)
-        gestureDetector.onTouchEvent(e)
+        feedDetectors(e)
         if (e.pointerCount >= 2 || isScaling || scaleFactor > 1.02f) {
             return true
         }
@@ -118,8 +123,7 @@ class ZoomablePdfRecyclerView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
-        scaleDetector.onTouchEvent(e)
-        gestureDetector.onTouchEvent(e)
+        feedDetectors(e)
 
         when (e.actionMasked) {
             MotionEvent.ACTION_DOWN -> {

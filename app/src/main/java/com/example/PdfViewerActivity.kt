@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.LruCache
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,14 @@ import com.example.download.DownloadFormat
 import com.example.download.DownloadState
 import com.example.download.DownloadStatus
 import com.example.download.PdfDownloadService
+import com.example.pdf.PdfPasswordStore
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import com.tom_roush.pdfbox.io.MemoryUsageSetting
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,6 +65,9 @@ class PdfViewerActivity : AppCompatActivity() {
     private var totalPages = 0
     private var toolbarsVisible = true
     private var remoteDownloadListener: DownloadCenter.Listener? = null
+    private lateinit var passwordStore: PdfPasswordStore
+    private var decryptedTempFile: File? = null
+    private var passwordDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
@@ -75,6 +87,7 @@ class PdfViewerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         repository = GuideRepository.getInstance(this)
+        passwordStore = PdfPasswordStore(this)
         applyWindowInsets()
 
         val title = intent.getStringExtra(EXTRA_TITLE).orEmpty().ifBlank { "PDF Reader" }
@@ -287,33 +300,172 @@ class PdfViewerActivity : AppCompatActivity() {
         binding.layoutViewerLoading.visibility = View.VISIBLE
         binding.tvLoadingStatus.text = "অফলাইন PDF খুলছে…"
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val opened = runCatching {
-                val pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-                val renderer = PdfRenderer(pfd)
+        lifecycleScope.launch {
+            val opened = withContext(Dispatchers.IO) { runCatching { openRenderer(file) } }
+            opened.onSuccess {
+                onPdfOpened()
+            }.onFailure { err ->
+                if (isPasswordError(err)) {
+                    // PDF এ পাসওয়ার্ড আছে — সেভ করা পাসওয়ার্ড থাকলে সেটা দিয়ে, নইলে ইউজারের কাছে চাওয়া হবে
+                    val saved = passwordStore.get(pdfKey(file))
+                    if (saved != null) {
+                        unlockWithPassword(file, saved, fromSaved = true)
+                    } else {
+                        promptForPassword(file, null)
+                    }
+                } else {
+                    failOpen(err)
+                }
+            }
+        }
+    }
+
+    private fun pdfKey(file: File): String = file.nameWithoutExtension
+
+    private fun isPasswordError(err: Throwable): Boolean =
+        err is SecurityException ||
+            err.message?.contains("password", ignoreCase = true) == true
+
+    /** [file] দিয়ে PdfRenderer খোলে। পাসওয়ার্ড লাগলে SecurityException ছুঁড়ে। */
+    private fun openRenderer(file: File) {
+        closeRenderer()
+        val pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+        try {
+            val renderer = PdfRenderer(pfd)
+            synchronized(rendererLock) {
                 pdfFileDescriptor = pfd
                 pdfRenderer = renderer
                 totalPages = renderer.pageCount
             }
+        } catch (t: Throwable) {
+            runCatching { pfd.close() }
+            throw t
+        }
+    }
 
-            withContext(Dispatchers.Main) {
-                binding.layoutViewerLoading.visibility = View.GONE
-                opened.onSuccess {
-                    if (totalPages <= 0) {
-                        Toast.makeText(this@PdfViewerActivity, "PDF এ কোনো পৃষ্ঠা নেই।", Toast.LENGTH_SHORT).show()
-                        finish()
-                        return@onSuccess
+    private fun closeRenderer() {
+        synchronized(rendererLock) {
+            runCatching { pdfRenderer?.close() }
+            runCatching { pdfFileDescriptor?.close() }
+            pdfRenderer = null
+            pdfFileDescriptor = null
+        }
+    }
+
+    private fun onPdfOpened() {
+        binding.layoutViewerLoading.visibility = View.GONE
+        if (totalPages <= 0) {
+            Toast.makeText(this, "PDF এ কোনো পৃষ্ঠা নেই।", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        binding.seekBarPage.max = (totalPages - 1).coerceAtLeast(0)
+        setupPdfRecycler()
+        updatePageIndicator(0)
+    }
+
+    private fun failOpen(err: Throwable) {
+        binding.layoutViewerLoading.visibility = View.GONE
+        Toast.makeText(
+            this,
+            "PDF খুলতে সমস্যা হয়েছে: ${err.localizedMessage}",
+            Toast.LENGTH_LONG
+        ).show()
+        finish()
+    }
+
+    /** পাসওয়ার্ড ইনপুট ডায়ালগ। ভুল হলে [errorText] সহ আবার দেখানো হয়। */
+    private fun promptForPassword(file: File, errorText: String?) {
+        if (isFinishing || isDestroyed) return
+        binding.layoutViewerLoading.visibility = View.GONE
+
+        val til = TextInputLayout(this).apply {
+            hint = "PDF এর পাসওয়ার্ড"
+            endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+            error = errorText
+        }
+        val et = TextInputEditText(til.context).apply {
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            maxLines = 1
+            imeOptions = EditorInfo.IME_ACTION_DONE
+        }
+        til.addView(et)
+        val pad = (20 * resources.displayMetrics.density).toInt()
+        val container = android.widget.FrameLayout(this).apply {
+            setPadding(pad, pad / 2, pad, 0)
+            addView(til)
+        }
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("PDF পাসওয়ার্ড দিন")
+            .setMessage("এই PDF টি পাসওয়ার্ড দিয়ে সুরক্ষিত। একবার সঠিক পাসওয়ার্ড দিলে অ্যাপ এটা মনে রাখবে।")
+            .setView(container)
+            .setCancelable(false)
+            .setPositiveButton("খুলুন", null)
+            .setNegativeButton("বাতিল") { _, _ -> finish() }
+            .create()
+        passwordDialog = dialog
+
+        dialog.setOnShowListener {
+            val submit = {
+                val pwd = et.text?.toString().orEmpty()
+                if (pwd.isEmpty()) {
+                    til.error = "পাসওয়ার্ড লিখুন"
+                } else {
+                    dialog.dismiss()
+                    unlockWithPassword(file, pwd, fromSaved = false)
+                }
+            }
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener { submit() }
+            et.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) { submit(); true } else false
+            }
+            et.requestFocus()
+            dialog.window?.setSoftInputMode(
+                android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
+            )
+        }
+        dialog.show()
+    }
+
+    /**
+     * পাসওয়ার্ড দিয়ে PDF এর সুরক্ষা সরিয়ে একটি অস্থায়ী (cache) কপি বানায়, তারপর সেটা খোলে।
+     * আসল ডাউনলোড ফাইল অপরিবর্তিত থাকে; অস্থায়ী কপি অ্যাপ বন্ধ হলে মুছে যায়।
+     * সঠিক হলে পাসওয়ার্ড সেভ হয়।
+     */
+    private fun unlockWithPassword(file: File, password: String, fromSaved: Boolean) {
+        binding.layoutViewerLoading.visibility = View.VISIBLE
+        binding.tvLoadingStatus.text = "PDF আনলক হচ্ছে…"
+
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching {
+                    PDFBoxResourceLoader.init(applicationContext)
+                    val dir = File(cacheDir, "decrypted_pdfs").apply { mkdirs() }
+                    val out = File(dir, "${pdfKey(file)}.pdf")
+                    PDDocument.load(file, password, MemoryUsageSetting.setupTempFileOnly()).use { doc ->
+                        doc.setAllSecurityToBeRemoved(true)
+                        doc.save(out)
                     }
-                    binding.seekBarPage.max = (totalPages - 1).coerceAtLeast(0)
-                    setupPdfRecycler()
-                    updatePageIndicator(0)
-                }.onFailure { err ->
-                    Toast.makeText(
-                        this@PdfViewerActivity,
-                        "PDF খুলতে সমস্যা হয়েছে: ${err.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    finish()
+                    openRenderer(out)
+                    out
+                }
+            }
+            result.onSuccess { out ->
+                decryptedTempFile = out
+                passwordStore.save(pdfKey(file), password)
+                onPdfOpened()
+            }.onFailure { err ->
+                if (err is InvalidPasswordException || isPasswordError(err)) {
+                    passwordStore.remove(pdfKey(file))
+                    promptForPassword(
+                        file,
+                        if (fromSaved) "সংরক্ষিত পাসওয়ার্ডটি আর কাজ করছে না, নতুন পাসওয়ার্ড দিন"
+                        else "পাসওয়ার্ড ভুল, আবার চেষ্টা করুন"
+                    )
+                } else {
+                    failOpen(err)
                 }
             }
         }
@@ -396,12 +548,9 @@ class PdfViewerActivity : AppCompatActivity() {
     override fun onDestroy() {
         detachRemoteListener()
         super.onDestroy()
-        synchronized(rendererLock) {
-            runCatching { pdfRenderer?.close() }
-            runCatching { pdfFileDescriptor?.close() }
-            pdfRenderer = null
-            pdfFileDescriptor = null
-        }
+        passwordDialog?.dismiss()
+        closeRenderer()
+        runCatching { decryptedTempFile?.delete() }
         pageCache.evictAll()
     }
 
