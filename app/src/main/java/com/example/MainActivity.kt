@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,10 @@ import com.example.data.GuideRepository
 import com.example.databinding.ActivityMainBinding
 import com.example.databinding.ItemDownloadedPdfBinding
 import com.example.databinding.ItemSubjectCardBinding
+import com.example.download.DownloadCenter
+import com.example.download.DownloadStatus
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +40,23 @@ class MainActivity : AppCompatActivity() {
     private var allOfflinePdfs: List<DownloadedPdfMeta> = emptyList()
     private lateinit var offlineAdapter: OfflinePdfAdapter
     private lateinit var subjectAdapter: SubjectGridAdapter
+
+    /** onCreate শেষ হয়েছে কি না — listener আগে ডাকলে binding এখনো তৈরি না-ও হতে পারে। */
+    private var uiReady = false
+
+    private val downloadListener = DownloadCenter.Listener { state ->
+        if (state.status == DownloadStatus.DONE && uiReady) refreshOfflineList()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        DownloadCenter.addListener(downloadListener)
+    }
+
+    override fun onStop() {
+        DownloadCenter.removeListener(downloadListener)
+        super.onStop()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         setupOfflineLibrary()
         setupBottomNav()
         refreshAll()
+        uiReady = true
     }
 
     override fun onResume() {
@@ -295,18 +317,21 @@ class MainActivity : AppCompatActivity() {
             b.tvPdfSubjectBadge.text = meta.subject
 
             val thumbFile = File(meta.thumbnailPath)
-            if (thumbFile.exists()) {
-                val bmp = BitmapFactory.decodeFile(thumbFile.absolutePath)
-                if (bmp != null) {
-                    b.ivPdfThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
-                    b.ivPdfThumbnail.setImageBitmap(bmp)
-                } else {
-                    b.ivPdfThumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    b.ivPdfThumbnail.setImageResource(R.drawable.ic_pdf_doc)
-                }
+            val bmp = if (thumbFile.exists()) BitmapFactory.decodeFile(thumbFile.absolutePath) else null
+            if (bmp != null) {
+                b.ivPdfThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
+                b.ivPdfThumbnail.setImageBitmap(bmp)
             } else {
                 b.ivPdfThumbnail.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 b.ivPdfThumbnail.setImageResource(R.drawable.ic_pdf_doc)
+                // থাম্বনেইল না থাকলে পেছনে বানিয়ে দেখাও (binding শুধু onCreate এর পরেই ব্যবহারযোগ্য)
+                lifecycleScope.launch {
+                    if (!uiReady) return@launch
+                    if (repository.ensureThumbnail(meta)) {
+                        val index = holder.bindingAdapterPosition
+                        if (index != RecyclerView.NO_POSITION) notifyItemChanged(index)
+                    }
+                }
             }
 
             b.cardDownloadedPdf.setOnClickListener { onOpen(meta) }

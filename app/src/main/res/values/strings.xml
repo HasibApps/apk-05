@@ -19,6 +19,7 @@
     <string name="cd_open_offline">অফলাইনে পড়ুন</string>
     <string name="cd_search_page">পৃষ্ঠা খুঁজুন</string>
     <string name="cd_delete_pdf">ডাউনলোড মুছুন</string>
+    <string name="cd_cancel_download">ডাউনলোড বাতিল করুন</string>
 
     <string name="settings_title">সেটিংস ও কন্ট্রোল</string>
     <string name="settings_admin_title">অ্যাডমিন প্যানেল</string>

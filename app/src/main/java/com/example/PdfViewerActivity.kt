@@ -1,9 +1,12 @@
 package com.example
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
+import android.os.Build
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.LruCache
@@ -19,7 +22,9 @@ import android.webkit.WebViewClient
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -29,6 +34,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.data.GuideRepository
 import com.example.databinding.ActivityPdfViewerBinding
 import com.example.databinding.ItemPdfPageBinding
+import com.example.download.DownloadCenter
+import com.example.download.DownloadFormat
+import com.example.download.DownloadState
+import com.example.download.DownloadStatus
+import com.example.download.PdfDownloadService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,6 +55,10 @@ class PdfViewerActivity : AppCompatActivity() {
     private val rendererLock = Any()
     private var totalPages = 0
     private var toolbarsVisible = true
+    private var remoteDownloadListener: DownloadCenter.Listener? = null
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     private val pageCache = object : LruCache<Int, Bitmap>(16) {
         override fun entryRemoved(evicted: Boolean, key: Int, oldValue: Bitmap, newValue: Bitmap?) {
@@ -183,23 +197,65 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * PDF ডাউনলোড Service এর মাধ্যমে হয়, তাই এখান থেকে বের হয়ে গেলেও ডাউনলোড চলতে থাকে।
+     * ডাউনলোড শেষ হলে এখানে নিজে থেকেই PDF খুলে যায়।
+     */
     private fun downloadOrPreviewRemote(url: String, title: String, subject: String) {
         binding.layoutViewerLoading.visibility = View.VISIBLE
         binding.tvLoadingStatus.text = "অফলাইন রিডারের জন্য PDF ডাউনলোড হচ্ছে…"
 
-        lifecycleScope.launch {
-            val result = repository.downloadPdfForOffline(url, title, subject) { pct ->
-                runOnUiThread {
-                    binding.tvLoadingStatus.text = "ডাউনলোড হচ্ছে… $pct%"
+        val listener = DownloadCenter.Listener { state: DownloadState ->
+            if (state.url == url) {
+                when (state.status) {
+                    DownloadStatus.QUEUED, DownloadStatus.DOWNLOADING -> {
+                        binding.tvLoadingStatus.text = DownloadFormat.progressLine(state)
+                    }
+                    DownloadStatus.DONE -> {
+                        detachRemoteListener()
+                        binding.layoutViewerLoading.visibility = View.GONE
+                        val meta = repository.findDownloadedByUrl(url)
+                        if (meta != null && File(meta.pdfPath).exists()) {
+                            openLocalPdf(File(meta.pdfPath))
+                        } else {
+                            openWebFallback(url)
+                        }
+                    }
+                    DownloadStatus.FAILED -> {
+                        detachRemoteListener()
+                        binding.layoutViewerLoading.visibility = View.GONE
+                        // Drive প্রিভিউ বা ওয়েব পেজ হলে ওয়েবভিউতে দেখাও
+                        openWebFallback(url)
+                    }
+                    DownloadStatus.CANCELLED -> {
+                        detachRemoteListener()
+                        finish()
+                    }
                 }
             }
-            binding.layoutViewerLoading.visibility = View.GONE
-            result.onSuccess { meta ->
-                openLocalPdf(File(meta.pdfPath))
-            }.onFailure {
-                // Fallback to WebView preview for web pages or Drive preview URLs
-                openWebFallback(url)
-            }
+        }
+        remoteDownloadListener = listener
+        DownloadCenter.addListener(listener)
+
+        if (!DownloadCenter.isActive(url)) {
+            ensureNotificationPermission()
+            PdfDownloadService.enqueue(this, url, title, subject)
+        } else {
+            DownloadCenter.get(url)?.let { binding.tvLoadingStatus.text = DownloadFormat.progressLine(it) }
+        }
+    }
+
+    private fun detachRemoteListener() {
+        remoteDownloadListener?.let { DownloadCenter.removeListener(it) }
+        remoteDownloadListener = null
+    }
+
+    private fun ensureNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
@@ -338,6 +394,7 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        detachRemoteListener()
         super.onDestroy()
         synchronized(rendererLock) {
             runCatching { pdfRenderer?.close() }

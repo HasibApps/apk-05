@@ -27,8 +27,8 @@
 
         <!-- Auto Thumbnail when downloaded, or PDF vector badge -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="46dp"
-            android:layout_height="46dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             app:cardBackgroundColor="#FEF2F2"
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
@@ -70,10 +70,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="অনলাইন PDF • অফলাইনে সেভ করতে ডাউনলোড করুন"
                 android:textColor="@color/text_muted"
                 android:textSize="11.5sp" />
+
+            <ProgressBar
+                android:id="@+id/progressLinear"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginTop="6dp"
+                android:indeterminate="false"
+                android:max="100"
+                android:maxHeight="4dp"
+                android:minHeight="4dp"
+                android:progress="0"
+                android:progressBackgroundTint="@color/border_subtle"
+                android:progressTint="@color/cyber_emerald"
+                android:indeterminateTint="@color/cyber_emerald"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Download / Progress / Offline Ready Action (NO Copy Button) -->
@@ -89,15 +105,6 @@
                 android:contentDescription="@string/cd_download_pdf"
                 android:padding="12dp"
                 android:src="@drawable/ic_download" />
-
-            <ProgressBar
-                android:id="@+id/progressDownload"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -1,13 +1,18 @@
 package com.example
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -18,6 +23,11 @@ import com.example.databinding.ActivitySubjectBinding
 import com.example.databinding.ItemPdfFolderBinding
 import com.example.databinding.ItemPdfRowBinding
 import com.example.databinding.ItemSectionHeaderBinding
+import com.example.download.DownloadCenter
+import com.example.download.DownloadFormat
+import com.example.download.DownloadState
+import com.example.download.DownloadStatus
+import com.example.download.PdfDownloadService
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -30,7 +40,14 @@ class SubjectActivity : AppCompatActivity() {
     private var subjectName: String = ""
     private var isFirstPaper: Boolean = true
     private val expandedFolders = mutableSetOf<String>()
-    private val downloadingUrls = mutableSetOf<String>()
+
+    /** url -> বর্তমানে স্ক্রিনে থাকা সারিগুলো (একই লিংক একাধিক জায়গায় থাকতে পারে) */
+    private val rowViews = mutableMapOf<String, MutableList<ItemPdfRowBinding>>()
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    private val downloadListener = DownloadCenter.Listener { state -> onDownloadChanged(state) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +66,45 @@ class SubjectActivity : AppCompatActivity() {
         renderPaper()
     }
 
+    override fun onStart() {
+        super.onStart()
+        DownloadCenter.addListener(downloadListener)
+    }
+
+    override fun onStop() {
+        DownloadCenter.removeListener(downloadListener)
+        super.onStop()
+    }
+
     override fun onResume() {
         super.onResume()
         renderPaper()
+    }
+
+    private fun onDownloadChanged(state: DownloadState) {
+        when (state.status) {
+            DownloadStatus.QUEUED, DownloadStatus.DOWNLOADING -> {
+                rowViews[state.url]?.forEach { applyDownloadingUi(it, state) }
+            }
+            DownloadStatus.DONE, DownloadStatus.CANCELLED -> renderPaper()
+            DownloadStatus.FAILED -> {
+                renderPaper()
+                Toast.makeText(
+                    this,
+                    "“${state.title}”: ${state.error ?: "ডাউনলোড করা যায়নি"}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    private fun ensureNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     private fun applyWindowInsets() {
@@ -99,6 +152,8 @@ class SubjectActivity : AppCompatActivity() {
     }
 
     private fun renderPaper() {
+        val savedScrollY = binding.scrollSubjectContent.scrollY
+        rowViews.clear()
         binding.layoutSectionsContainer.removeAllViews()
         val subjectData = repository.getDatabase().subjects[subjectName]
         val paperData = if (isFirstPaper) subjectData?.first else subjectData?.second
@@ -117,6 +172,10 @@ class SubjectActivity : AppCompatActivity() {
             paperData.testPaper.forEachIndexed { idx, item ->
                 addResourceCard(item, "test_$idx")
             }
+        }
+
+        if (savedScrollY > 0) {
+            binding.scrollSubjectContent.post { binding.scrollSubjectContent.scrollTo(0, savedScrollY) }
         }
     }
 
@@ -166,99 +225,125 @@ class SubjectActivity : AppCompatActivity() {
 
     private fun bindPdfRow(rowBinding: ItemPdfRowBinding, title: String, url: String) {
         rowBinding.tvRowTitle.text = title
-        val downloaded = repository.findDownloadedByUrl(url)
-        val isDownloading = downloadingUrls.contains(url)
+        if (url.isNotBlank()) {
+            rowViews.getOrPut(url) { mutableListOf() }.add(rowBinding)
+        }
 
-        if (downloaded != null && File(downloaded.pdfPath).exists()) {
-            // Show auto thumbnail, date & size
-            val thumbFile = File(downloaded.thumbnailPath)
-            if (thumbFile.exists()) {
-                val bmp = BitmapFactory.decodeFile(thumbFile.absolutePath)
-                if (bmp != null) {
-                    rowBinding.ivRowThumb.setPadding(0, 0, 0, 0)
-                    rowBinding.ivRowThumb.scaleType = ImageView.ScaleType.CENTER_CROP
-                    rowBinding.ivRowThumb.setImageBitmap(bmp)
-                }
-            }
+        val downloaded = repository.findDownloadedByUrl(url)
+        val isOffline = downloaded != null && File(downloaded.pdfPath).exists()
+        val activeState = DownloadCenter.get(url)?.takeIf { it.isActive }
+
+        rowBinding.progressLinear.visibility = View.GONE
+
+        if (isOffline && downloaded != null) {
+            showThumbnail(rowBinding, downloaded)
             val sizeStr = GuideRepository.formatFileSize(downloaded.fileSizeBytes)
             val dateStr = GuideRepository.formatShortDate(downloaded.downloadedAtMillis)
-            rowBinding.tvRowSubtitle.text = "অফলাইন রেডি • $dateStr • $sizeStr (${downloaded.pageCount} পৃষ্ঠা)"
+            val pages = if (downloaded.pageCount > 0) " (${downloaded.pageCount} পৃষ্ঠা)" else ""
+            rowBinding.tvRowSubtitle.text = "অফলাইন রেডি • $dateStr • $sizeStr$pages"
             rowBinding.tvRowSubtitle.setTextColor(getColor(R.color.cyber_emerald_dark))
             rowBinding.btnDownloadPdf.setImageResource(R.drawable.ic_offline_check)
             rowBinding.btnDownloadPdf.contentDescription = getString(R.string.cd_open_offline)
         } else {
-            rowBinding.ivRowThumb.setPadding(16, 16, 16, 16)
-            rowBinding.ivRowThumb.scaleType = ImageView.ScaleType.CENTER_INSIDE
-            rowBinding.ivRowThumb.setImageResource(R.drawable.ic_pdf_doc)
-            rowBinding.tvRowSubtitle.text = "অনলাইন PDF • অফলাইনে সেভ করতে ডাউনলোড করুন"
-            rowBinding.tvRowSubtitle.setTextColor(getColor(R.color.text_muted))
-            rowBinding.btnDownloadPdf.setImageResource(R.drawable.ic_download)
-            rowBinding.btnDownloadPdf.contentDescription = getString(R.string.cd_download_pdf)
+            showPlaceholderThumb(rowBinding)
+            if (activeState != null) {
+                applyDownloadingUi(rowBinding, activeState)
+            } else {
+                rowBinding.tvRowSubtitle.text = "অনলাইন PDF • অফলাইনে সেভ করতে ডাউনলোড করুন"
+                rowBinding.tvRowSubtitle.setTextColor(getColor(R.color.text_muted))
+                rowBinding.btnDownloadPdf.setImageResource(R.drawable.ic_download)
+                rowBinding.btnDownloadPdf.contentDescription = getString(R.string.cd_download_pdf)
+            }
         }
-
-        rowBinding.progressDownload.visibility = if (isDownloading) View.VISIBLE else View.GONE
-        rowBinding.btnDownloadPdf.visibility = if (isDownloading) View.INVISIBLE else View.VISIBLE
 
         rowBinding.cardPdfRow.setOnClickListener {
             if (url.isBlank()) {
-                Toast.makeText(this, "PDF লিংক সেট করা হয়নি।", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "PDF লিংক সেট করা হয়নি।", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val intent = Intent(this, PdfViewerActivity::class.java).apply {
-                putExtra(PdfViewerActivity.EXTRA_TITLE, title)
-                putExtra(PdfViewerActivity.EXTRA_SUBJECT, subjectName)
-                if (downloaded != null && File(downloaded.pdfPath).exists()) {
-                    putExtra(PdfViewerActivity.EXTRA_LOCAL_PATH, downloaded.pdfPath)
-                } else {
-                    putExtra(PdfViewerActivity.EXTRA_REMOTE_URL, url)
-                }
-            }
-            startActivity(intent)
+            openPdf(title, url)
         }
 
         rowBinding.btnDownloadPdf.setOnClickListener {
             if (url.isBlank()) {
-                Toast.makeText(this, "PDF লিংক সেট করা হয়নি।", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "PDF লিংক সেট করা হয়নি।", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            val current = repository.findDownloadedByUrl(url)
+            if (current != null && File(current.pdfPath).exists()) {
+                openPdf(title, url)
+                return@setOnClickListener
+            }
+            if (DownloadCenter.isActive(url)) {
+                // চলমান/অপেক্ষমান ডাউনলোড বাতিল
+                PdfDownloadService.cancel(this, url)
+                return@setOnClickListener
+            }
+            startBackgroundDownload(url, title)
+        }
+    }
+
+    private fun startBackgroundDownload(url: String, title: String) {
+        ensureNotificationPermission()
+        PdfDownloadService.enqueue(this, url, title, subjectName)
+        val state = DownloadCenter.get(url) ?: DownloadState(url, title, subjectName)
+        rowViews[url]?.forEach { applyDownloadingUi(it, state) }
+    }
+
+    private fun openPdf(title: String, url: String) {
+        val downloaded = repository.findDownloadedByUrl(url)
+        val intent = Intent(this, PdfViewerActivity::class.java).apply {
+            putExtra(PdfViewerActivity.EXTRA_TITLE, title)
+            putExtra(PdfViewerActivity.EXTRA_SUBJECT, subjectName)
             if (downloaded != null && File(downloaded.pdfPath).exists()) {
-                // Already downloaded -> open directly in Offline Reader
-                val intent = Intent(this, PdfViewerActivity::class.java).apply {
-                    putExtra(PdfViewerActivity.EXTRA_TITLE, title)
-                    putExtra(PdfViewerActivity.EXTRA_SUBJECT, subjectName)
-                    putExtra(PdfViewerActivity.EXTRA_LOCAL_PATH, downloaded.pdfPath)
-                }
-                startActivity(intent)
-                return@setOnClickListener
+                putExtra(PdfViewerActivity.EXTRA_LOCAL_PATH, downloaded.pdfPath)
+            } else {
+                putExtra(PdfViewerActivity.EXTRA_REMOTE_URL, url)
             }
-            if (downloadingUrls.contains(url)) return@setOnClickListener
+        }
+        startActivity(intent)
+    }
 
-            downloadingUrls.add(url)
-            rowBinding.progressDownload.visibility = View.VISIBLE
-            rowBinding.btnDownloadPdf.visibility = View.INVISIBLE
-            rowBinding.tvRowSubtitle.text = "ডাউনলোড হচ্ছে…"
+    /** ডাউনলোড চলাকালীন সারির UI: সাইজ (MB), গতি (MB/s), প্রোগ্রেস বার ও বাতিল বাটন */
+    private fun applyDownloadingUi(row: ItemPdfRowBinding, state: DownloadState) {
+        row.tvRowSubtitle.text = DownloadFormat.progressLine(state)
+        row.tvRowSubtitle.setTextColor(getColor(R.color.cyber_emerald_dark))
+        row.progressLinear.visibility = View.VISIBLE
+        if (state.status == DownloadStatus.DOWNLOADING && state.totalBytes > 0) {
+            row.progressLinear.isIndeterminate = false
+            row.progressLinear.max = 100
+            row.progressLinear.progress = state.percent
+        } else {
+            row.progressLinear.isIndeterminate = true
+        }
+        row.btnDownloadPdf.setImageResource(R.drawable.ic_close)
+        row.btnDownloadPdf.contentDescription = getString(R.string.cd_cancel_download)
+    }
 
+    private fun showPlaceholderThumb(row: ItemPdfRowBinding) {
+        row.ivRowThumb.setPadding(16, 16, 16, 16)
+        row.ivRowThumb.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        row.ivRowThumb.setImageResource(R.drawable.ic_pdf_doc)
+    }
+
+    /** ডাউনলোড করা PDF এর প্রথম পৃষ্ঠার থাম্বনেইল (না থাকলে এখনই বানিয়ে নেয়) */
+    private fun showThumbnail(row: ItemPdfRowBinding, meta: com.example.data.DownloadedPdfMeta) {
+        val thumbFile = File(meta.thumbnailPath)
+        val bmp = if (thumbFile.exists()) BitmapFactory.decodeFile(thumbFile.absolutePath) else null
+        if (bmp != null) {
+            row.ivRowThumb.setPadding(0, 0, 0, 0)
+            row.ivRowThumb.scaleType = ImageView.ScaleType.CENTER_CROP
+            row.ivRowThumb.setImageBitmap(bmp)
+        } else {
+            showPlaceholderThumb(row)
             lifecycleScope.launch {
-                val res = repository.downloadPdfForOffline(url, title, subjectName) { pct ->
-                    runOnUiThread {
-                        rowBinding.tvRowSubtitle.text = "অ্যাপে ডাউনলোড হচ্ছে… $pct%"
+                if (repository.ensureThumbnail(meta)) {
+                    val fresh = BitmapFactory.decodeFile(thumbFile.absolutePath)
+                    if (fresh != null) {
+                        row.ivRowThumb.setPadding(0, 0, 0, 0)
+                        row.ivRowThumb.scaleType = ImageView.ScaleType.CENTER_CROP
+                        row.ivRowThumb.setImageBitmap(fresh)
                     }
-                }
-                downloadingUrls.remove(url)
-                res.onSuccess {
-                    Toast.makeText(
-                        this@SubjectActivity,
-                        "“$title” অফলাইন রিডিং এর জন্য সেভ হয়েছে!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    renderPaper()
-                }.onFailure { err ->
-                    Toast.makeText(
-                        this@SubjectActivity,
-                        err.localizedMessage ?: "ডাউনলোড করা যায়নি",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    renderPaper()
                 }
             }
         }
