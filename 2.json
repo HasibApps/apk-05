@@ -1,0 +1,655 @@
+{
+  "subjects": {
+    "বাংলা": {
+      "first": {
+        "main_book": [
+          {
+            "title": "বাংলা মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": ""
+              }
+            ]
+          }
+        ],
+        "test_paper": []
+      },
+      "second": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় ২",
+                "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "সকল অধ্যায় MCQ",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ইংরেজি": {
+      "first": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "অনুপম",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "১ম part 01",
+                "link": "https://drive.google.com/file/d/1Gzti-3FJxtS6Wtc6uzT3dMcSz6llDg_v/view?usp=drivesdk"
+              },
+              {
+                "name": "part 02",
+                "link": "https://drive.google.com/file/d/10koowPRhse4Mo9BM5UitQwB9Ykks3VBa/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 3",
+                "link": "https://drive.google.com/file/d/1QBgqSJSnwev6PgX9kIwg74EyZe4rjAEK/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 4",
+                "link": "https://drive.google.com/file/d/1Nf76xovkneXgbTs6ZRtQDQ08mIrVDNbp/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 5",
+                "link": "https://drive.google.com/file/d/1FySJJhkDoRBxOWwIfuOb_YwpkmvNMd2p/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 6",
+                "link": "https://drive.google.com/file/d/19ferQ7tmDwG9w0S3ib6vwRsNNnhVObeW/view?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      },
+      "second": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "আইসিটি": {
+      "first": {
+        "main_book": [
+          {
+            "title": "মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1zuTtJ0g_BU69qq87_hXZT1ISB11ya4AT/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় ২",
+                "link": "https://drive.google.com/file/d/1DzZTjjt0S9bE8k_nwTlQKUOXnw3SvbM0/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 3",
+                "link": "https://drive.google.com/file/d/1AF8Yw48b-6VrKTmsIo-tOJmbcYPc7ros/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 4",
+                "link": "https://drive.google.com/file/d/1B36Zq_I-omAmJPh92D6mfA7jD0rmMjM3/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 5",
+                "link": "https://drive.google.com/file/d/1rxhc74stSL5gRwh2QLed_SwVPesCGSKC/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 6",
+                "link": "https://drive.google.com/file/d/1DDpZZZQDu7XRZ5Agj5gEjfNiVd97loVF/view?usp=drivesdk"
+              },
+              {
+                "name": "Main Book",
+                "link": "https://drive.google.com/file/d/1KAoZ1S2APAUuhBwitDCwFrsVHjTAtjYn/view?usp=drivesdk"
+              }
+            ]
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "রয়েল 2026",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "Bord Question",
+                "link": "https://drive.google.com/file/d/1KjUZ1pgWTYHnxd8TOiG2gJ5wFWiu7698/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 1",
+                "link": "https://drive.google.com/file/d/1JlKTiZ5nB_R_3se8t2as_Yuzw_Wyd2dw/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 2",
+                "link": "https://drive.google.com/file/d/1asAmSV6dcMtbfpKUXbQnIBjZfNksbRWZ/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 3",
+                "link": "https://drive.google.com/file/d/11fxHUGPVKNfBc5neE6wzwGXs_wceMNa_/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 4",
+                "link": "https://drive.google.com/file/d/1DIpCFtiOng7SKotPSOEkCx5v9czSXG6-/view?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "ACS Comp",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় 3",
+                "link": "https://drive.google.com/file/d/1xTyT8Q_GzirCkP_Rd-RF9k1b51HChyJE/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 4",
+                "link": "https://drive.google.com/file/d/1KT5-2gyXpEe_J9sihuQL5ep-vp4bNhTp/view?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      },
+      "second": {
+        "main_book": [],
+        "test_paper": []
+      }
+    },
+    "পদার্থবিজ্ঞান": {
+      "first": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় ২",
+                "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "সকল অধ্যায় MCQ",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "রয়েল tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় 4",
+                "link": "https://drive.google.com/file/d/1qb5xUbn-X4hwI9aUY90JBw7GevRg841H/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 5",
+                "link": "https://drive.google.com/file/d/1qnV2gLKk-XecZitsja4hs3AcIi0NeA2M/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 9",
+                "link": "https://drive.google.com/file/d/1PXPb3IiOPzU4y3B60bWtHbb85sx-pGBe/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 10",
+                "link": "https://drive.google.com/file/d/1s48mzIadoa88lL7Fx5l0XlYCe2O4dvNL/view?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "Royel",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় All",
+                "link": "https://drive.google.com/file/d/1jU7Oul83akY_YUrrXVmJ5Xkt3dFE1mwc/view?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      },
+      "second": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "রসায়ন": {
+      "first": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "রয়েল ১ম পত্রিকার গাইড ২০২৬",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              },
+              {
+                "name": "(26)QPS_Che!1st part:01",
+                "link": "https://drive.google.com/file/d/17LenHnFRe7RzKIF6vhfGOKK_2u8yIr66/preview?usp=drivesdk"
+              },
+              {
+                "name": "(26)QPS_Che!2nd part:02",
+                "link": "https://drive.google.com/file/d/1yzYlA6RVxwRGDpl2Ob-acQwDPiVbicoM/preview?usp=drivesdk"
+              },
+              {
+                "name": "(26) রয়েল ১ম পত্র গাইড",
+                "link": "https://drive.google.com/file/d/1f7sJgAJZecQrbiMdDORgPqRF2JNXkT0c/preview?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "সকল অধ্যায় MCQ",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk",
+            "chapters": []
+          },
+          {
+            "title": "বেসিক ধারণা (Royal)",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1m0r3OdI5UJ6xkK8VtHpP5zI_q6Mq6aOZ/preview?usp=drivesdk",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "রয়েল ১ম পত্রিকার গাইড ২০২৬",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              },
+              {
+                "name": "(26)QPS_Che!1st part:01",
+                "link": "https://drive.google.com/file/d/17LenHnFRe7RzKIF6vhfGOKK_2u8yIr66/preview?usp=drivesdk"
+              },
+              {
+                "name": "(26)QPS_Che!2nd part:02",
+                "link": "https://drive.google.com/file/d/1yzYlA6RVxwRGDpl2Ob-acQwDPiVbicoM/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      },
+      "second": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "(26)QPS_Che!2nd part:01",
+                "link": "https://drive.google.com/file/d/1SYS-qGoPN0zZgQnwBm5I9G0Wt8WFbEEM/preview?usp=drivesdk"
+              },
+              {
+                "name": "(26)QPS_Che!2nd part:02",
+                "link": "https://drive.google.com/file/d/1SZEbdimZvKmdp3U0vtUlXmrLYjpyiWux/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "জীববিজ্ঞান": {
+      "first": {
+        "main_book": [
+          {
+            "title": "গাজী আজমল দাগানো বই ২০২৬-২৭",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় 1",
+                "link": "https://drive.google.com/file/d/13vs9-JnUby9N9j6_A3aUewASJVtJWq3t/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 2",
+                "link": "https://drive.google.com/file/d/1rVhe92NvYDcbCZl9KgMK9HaJEffBVvHh/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 3",
+                "link": ""
+              },
+              {
+                "name": "অধ্যায় 4",
+                "link": ""
+              },
+              {
+                "name": "অধ্যায় 5",
+                "link": ""
+              },
+              {
+                "name": "অধ্যায় 6",
+                "link": "https://drive.google.com/file/d/1IwxvW8hNPLtcJ-01fIREkTvm64OcYnQy/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 7",
+                "link": ""
+              },
+              {
+                "name": "অধ্যায় 8",
+                "link": "https://drive.google.com/file/d/1R3IF9eYclpf-JCJ8aBRxAJwXx00e-a8p/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 9",
+                "link": "https://drive.google.com/file/d/14dnc2Sw31jxcbT8B632FUa2khggZIXBQ/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 10",
+                "link": ""
+              },
+              {
+                "name": "অধ্যায় 11",
+                "link": "https://drive.google.com/file/d/1by0DKZn4a2YhG3qDTGt4z_a822H2BaIl/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 12",
+                "link": ""
+              }
+            ]
+          },
+          {
+            "title": "সকল অধ্যায় MCQ",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "QPS(26) Biology 1st paper",
+                "link": "https://drive.google.com/file/d/12izZxebMZ5diIlEG7_9OdY4jLIBKjSGn/preview?usp=drivesdk"
+              },
+              {
+                "name": "QPS(26) 1st preview part:01",
+                "link": "https://drive.google.com/file/d/139gKZu4Krknj3vhBz5e4UEXTNPVl2ObH/preview?usp=drivesdk"
+              },
+              {
+                "name": "QPS(26) 1st preview part:02",
+                "link": "https://drive.google.com/file/d/1xb8HkfyvwJSCJy-GgSPkFv-WAaAU0UXy/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      },
+      "second": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "সকল অধ্যায় MCQ",
+            "isCQ": false,
+            "link": "https://viphasibul792.github.io/All_in_one_guide-book/",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "QPS(26) Biology 2nd paper",
+                "link": "https://drive.google.com/file/d/1Ci2UC2KVX_WClXrffD9YuRhoXTibNgy8/preview?usp=drivesdk"
+              },
+              {
+                "name": "QPS(26) Biology 2nd paper part:01",
+                "link": "https://drive.google.com/file/d/1Jv4_w1PIfVJDeo9-T0WLRLqYgPpWlF-M/preview?usp=drivesdk"
+              },
+              {
+                "name": "QPS(26) Biology 2nd paper part:02",
+                "link": "https://drive.google.com/file/d/1rvPeJGkW4QVvub4PEDpw4o_C9Q0VVlHQ/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "উচ্চতর গণিত": {
+      "first": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় ২",
+                "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "সকল অধ্যায় MCQ",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1yxWcINececpor75squeH-hxEKD8ioOBz/preview?usp=drivesdk",
+            "chapters": []
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "পাঞ্জেরী",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1eEED08F8dQAjatLbeV0pICykxIO9TPs2/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় ২",
+                "link": "https://drive.google.com/file/d/1GgbPKHdJKlLe3K8HUTTHA_rytXOrwN0T/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 3",
+                "link": "https://drive.google.com/file/d/1PSzzXBNUHrWulWm0xYwu4Dnf4m50K3F8/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 4",
+                "link": "https://drive.google.com/file/d/1kNsFVv61i80le3Dw2nZScK_JgPsPM9F_/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 5",
+                "link": "https://drive.google.com/file/d/1aZ84ddcQ1vB2Edq7jr9x4qdJ0xZrzOxa/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 6",
+                "link": "https://drive.google.com/file/d/1F-1A5vxGk-_qIc3G9ZomzfzQjC2RhZPp/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 7",
+                "link": "https://drive.google.com/file/d/1drdENeHiQAODRc72W0EEWZSkzT56dNMQ/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 8",
+                "link": "https://drive.google.com/file/d/1Fe1Bmt0SwocXVOVq_DXQQInMmM9M9xhw/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 9",
+                "link": "https://drive.google.com/file/d/1QN3XGenh36p10SJEUG2y-GTzSBL9jAi8/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 10",
+                "link": "https://drive.google.com/file/d/1ULRNGitxHwGzoyIISbczmSD1jh8UTsbT/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 11",
+                "link": "https://drive.google.com/file/d/1xHvkUYAnBll-sI7msfr5YfZ2eGGZvjn_/view?usp=drivesdk"
+              },
+              {
+                "name": "অধ্যায় 12",
+                "link": "https://drive.google.com/file/d/1SpzzPJImTpxH-kXNGVR9rn_hHqPLri5Y/view?usp=drivesdk"
+              }
+            ]
+          },
+          {
+            "title": "Math 2nd",
+            "isCQ": false,
+            "link": "https://drive.google.com/file/d/1nhzbRd4stDnjcyDu9yjRXKP1eJkauBRb/view?usp=drivesdk",
+            "chapters": []
+          }
+        ]
+      },
+      "second": {
+        "main_book": [
+          {
+            "title": "সকল প্রকাশনির মূল বই",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ],
+        "test_paper": [
+          {
+            "title": "All tast paper",
+            "isCQ": true,
+            "link": "",
+            "chapters": [
+              {
+                "name": "অধ্যায় ১",
+                "link": "https://drive.google.com/file/d/1u0EbFJbiK3woAxjPeNrB0PNG8STnmbov/preview?usp=drivesdk"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
